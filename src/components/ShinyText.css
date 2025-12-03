@@ -1,0 +1,33 @@
+.shiny-text {
+    color: #00f3ff;
+    background: linear-gradient(
+        120deg,
+        rgba(0, 243, 255, 1) 0%,
+        rgba(0, 243, 255, 1) 40%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(0, 243, 255, 1) 60%,
+        rgba(0, 243, 255, 1) 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shiny-text-animation 3s linear infinite;
+    font-size: 28px;
+    font-weight: 200;
+    letter-spacing: 15px;
+    filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.5));
+}
+
+.shiny-text.disabled {
+    animation: none;
+}
+
+@keyframes shiny-text-animation {
+    0% {
+        background-position: 100% center;
+    }
+    100% {
+        background-position: -100% center;
+    }
+}

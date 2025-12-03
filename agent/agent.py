@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
+import asyncio
 
-from livekit import agents
+from livekit import agents, rtc
 from livekit.agents import AgentSession, Agent, RoomInputOptions
 from livekit.plugins import google
 from prompts import AGENT_INSTRUCTIONS, SESSION_INSTRUCTIONS
@@ -19,6 +20,16 @@ async def entrypoint(ctx: agents.JobContext):
     session = AgentSession(
         llm=google.beta.realtime.RealtimeModel(voice="Aoede"),
     )
+
+    # Handle incoming text messages from the frontend
+    @ctx.room.on("data_received")
+    def on_data_received(data: rtc.DataPacket):
+        try:
+            text_message = data.data.decode("utf-8")
+            if text_message.strip():
+                asyncio.create_task(session.generate_reply(instructions=f"User said via text: {text_message}"))
+        except Exception as e:
+            print(f"Error processing data: {e}")
 
     await session.start(
         room=ctx.room,
