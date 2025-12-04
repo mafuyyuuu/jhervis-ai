@@ -26,17 +26,19 @@ const SKILLS_DATA = {
 
 const SkillsSection = () => {
     const { activeSection } = useScroll();
+    const isActive = activeSection === 'skills';
+    
     return (
-        <section id="skills">
-            <ScanEffect active={activeSection === 'skills'} />
+        <section id="skills" className={isActive ? 'section-active' : ''}>
+            <ScanEffect active={isActive} />
             <div className="skills-section-content">
                 <h2 className="section-title">SKILLS</h2>
-                {Object.entries(SKILLS_DATA).map(([category, skills]) => (
-                    <div key={category} className="skill-category">
+                {Object.entries(SKILLS_DATA).map(([category, skills], catIndex) => (
+                    <div key={category} className="skill-category" style={{ animationDelay: `${catIndex * 0.2}s` }}>
                         <h3 className="subsection-title">{category}</h3>
                         <div className="row">
-                            {skills.map(skill => (
-                                <div className="col-md-6" key={skill.id}>
+                            {skills.map((skill, skillIndex) => (
+                                <div className="col-md-6" key={skill.id} style={{ animationDelay: `${(catIndex * 0.2) + (skillIndex * 0.1)}s` }}>
                                     <SkillBar skill={skill} />
                                 </div>
                             ))}

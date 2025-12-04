@@ -9,19 +9,34 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
+.contact-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
 .holo-btn {
     background: transparent;
     border: 1px solid var(--glass-border);
     color: var(--neon-cyan);
-    padding: 12px 30px;
-    border-radius: 25px;
-    font-size: 1rem;
-    letter-spacing: 3px;
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.holo-btn .btn-icon {
+    font-size: 1.2rem;
 }
 
 .holo-btn::before {
@@ -37,9 +52,34 @@
 
 .holo-btn:hover {
     border-color: var(--neon-cyan);
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+    transform: translateY(-3px);
 }
 
 .holo-btn:hover::before {
     left: 100%;
+}
+
+.holo-btn.primary {
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 102, 255, 0.2));
+}
+
+.holo-btn.secondary {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.holo-btn.secondary:hover {
+    color: var(--neon-cyan);
+}
+
+.contact-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.footer-text {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 1px;
 }

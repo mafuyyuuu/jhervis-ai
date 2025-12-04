@@ -9,6 +9,28 @@
     letter-spacing: 0.3rem;
     margin-bottom: 3rem;
     text-align: center;
+    opacity: 0;
+    animation: fade-in-up 0.8s ease forwards;
+}
+
+.section-active .section-title {
+    animation: fade-in-up 0.8s ease forwards, title-glow 2s ease-in-out infinite;
+}
+
+@keyframes title-glow {
+    0%, 100% { text-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+    50% { text-shadow: 0 0 30px rgba(0, 243, 255, 0.6), 0 0 60px rgba(0, 243, 255, 0.3); }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .profile-summary p {
@@ -40,11 +62,14 @@
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.9);
     transition: all 0.3s ease;
+    opacity: 0;
+    animation: fade-in-up 0.5s ease forwards;
 }
 
 .details-list li:hover {
     transform: translateX(10px);
     border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
 }
 
 .details-list li::before {

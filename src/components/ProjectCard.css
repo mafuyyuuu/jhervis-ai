@@ -20,11 +20,17 @@
     transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-.project-card-scene:hover .project-card-inner {
-    /* Slight lift on hover, but not the flip */
-    transform: translateY(-5px);
+/* Hover effect - only lift, no flip */
+.project-card-scene:hover .project-card-inner:not(.is-flipped) {
+    transform: translateY(-8px);
 }
 
+/* When flipped, maintain rotation on hover */
+.project-card-scene:hover .project-card-inner.is-flipped {
+    transform: rotateY(180deg) translateY(-8px);
+}
+
+/* Flip state - ONLY triggered by click via JavaScript class */
 .project-card-inner.is-flipped {
     transform: rotateY(180deg);
 }
@@ -41,6 +47,13 @@
     border-radius: 20px;
     backdrop-filter: blur(20px);
     overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover glow effect on card face */
+.project-card-scene:hover .project-card-face {
+    border-color: rgba(0, 243, 255, 0.4);
+    box-shadow: 0 10px 40px rgba(0, 243, 255, 0.15);
 }
 
 /* FRONT FACE STYLES */
@@ -159,4 +172,61 @@
 .card-link:hover {
     color: var(--neon-cyan);
     text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* Click Hint */
+.click-hint {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-card-scene:hover .click-hint {
+    opacity: 1;
+}
+
+/* Project Tip Tooltip */
+.project-tip {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(5, 15, 30, 0.95);
+    border: 1px solid var(--neon-cyan);
+    border-radius: 12px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+    animation: tip-pop-in 0.3s ease;
+    white-space: nowrap;
+    max-width: 300px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes tip-pop-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+}
+
+.project-tip .tip-icon {
+    font-size: 1.2rem;
+    color: var(--neon-cyan);
+}
+
+.project-tip .tip-text {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: normal;
 }

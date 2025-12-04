@@ -1,11 +1,10 @@
 from dotenv import load_dotenv
-import asyncio
 import json
 
 from livekit import agents, rtc
 from livekit.agents import AgentSession, Agent, RoomInputOptions
 from livekit.plugins import google
-from prompts import AGENT_INSTRUCTIONS, SESSION_INSTRUCTIONS, NARRATION_PROMPTS, MOOD_PROMPTS
+from prompts import AGENT_INSTRUCTIONS, SESSION_INSTRUCTIONS, NARRATION_PROMPTS
 
 load_dotenv()
 
@@ -21,29 +20,17 @@ async def entrypoint(ctx: agents.JobContext):
     session = AgentSession(
         llm=google.beta.realtime.RealtimeModel(voice="Aoede"),
     )
-    
+
     current_mood = "default"
-
-    async def generate_and_publish(topic: str, instructions: str = None):
-        if instructions:
-            reply = await session.generate_reply(instructions=instructions)
-        else:
-            reply = await session.generate_reply()
-
-        response_event = {
-            "type": "chat_response",
-            "message": reply
-        }
-        data = json.dumps(response_event).encode("utf-8")
-        await ctx.room.local_participant.publish_data(data, topic=topic)
+    narrated_sections = set()  # Track which sections have been narrated
 
     # Handle incoming text messages from the frontend
     @ctx.room.on("data_received")
     def on_data_received(data: rtc.DataPacket):
+        nonlocal current_mood
         try:
-            nonlocal current_mood
             payload = data.data.decode("utf-8")
-            
+
             try:
                 event = json.loads(payload)
                 event_type = event.get("type")
@@ -61,34 +48,22 @@ async def entrypoint(ctx: agents.JobContext):
                             current_mood = "friendly"
                         else:
                             current_mood = "default"
-                            
-                        prompt = NARRATION_PROMPTS[section]
-                        session.agent.chat_ctx.add_message(role="system", content=MOOD_PROMPTS[current_mood])
-                        session.agent.chat_ctx.add_message(role="system", content=prompt)
-                        asyncio.create_task(generate_and_publish("narration"))
+
+                        # Only narrate if not already narrated
+                        if section not in narrated_sections:
+                            narrated_sections.add(section)
+                            prompt = NARRATION_PROMPTS[section]
+                            session.generate_reply(user_input=prompt)
                     return
+                    
                 elif event_type == "user_query":
                     query = event.get("query")
-                    session.agent.chat_ctx.add_message(role="system", content=MOOD_PROMPTS[current_mood])
-                    session.agent.chat_ctx.add_message(role="user", content=query)
-                    asyncio.create_task(generate_and_publish("chat"))
-                    return
-                elif event_type == "welcome":
-                    message = event.get("message")
-                    session.agent.chat_ctx.add_message(role="system", content=MOOD_PROMPTS[current_mood])
-                    session.agent.chat_ctx.add_message(role="system", content=message)
-                    asyncio.create_task(generate_and_publish("welcome"))
+                    if query:
+                        session.generate_reply(user_input=query)
                     return
 
             except json.JSONDecodeError:
-                # Not a JSON event, treat as a plain text message
                 pass
-
-            # Fallback to user message handling
-            if payload.strip():
-                session.agent.chat_ctx.add_message(role="system", content=MOOD_PROMPTS[current_mood])
-                session.agent.chat_ctx.add_message(role="user", content=payload)
-                asyncio.create_task(generate_and_publish("chat"))
 
         except Exception as e:
             print(f"Error processing data: {e}")
@@ -99,8 +74,8 @@ async def entrypoint(ctx: agents.JobContext):
         room_input_options=RoomInputOptions(),
     )
 
-    await generate_and_publish("welcome", instructions=SESSION_INSTRUCTIONS)
-
+    # Welcome - agent initiates
+    session.generate_reply(instructions=SESSION_INSTRUCTIONS)
 
 
 if __name__ == "__main__":

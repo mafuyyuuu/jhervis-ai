@@ -69,16 +69,20 @@ const MY_PROJECTS = [
 
 const ProjectsSection = () => {
     const { activeSection, hoveredProjectId } = useScroll();
+    const isActive = activeSection === 'projects';
+    
     return (
-        <section id="projects">
-            <ScanEffect active={activeSection === 'projects'} />
+        <section id="projects" className={isActive ? 'section-active' : ''}>
+            <ScanEffect active={isActive} />
             <div className="projects-section-content">
                 <h2 className="section-title">PROJECTS</h2>
+                <p className="section-subtitle">Click on any project to see more details</p>
                 <div className="row g-4">
-                    {MY_PROJECTS.map(project => (
+                    {MY_PROJECTS.map((project, index) => (
                         <div 
-                            className={`col-md-4 ${hoveredProjectId === project.id ? 'glow' : ''}`} 
+                            className={`col-md-4 project-col ${hoveredProjectId === project.id ? 'glow' : ''}`} 
                             key={project.id}
+                            style={{ animationDelay: `${index * 0.1}s` }}
                         >
                             <ProjectCard project={project} />
                         </div>

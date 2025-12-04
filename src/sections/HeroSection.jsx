@@ -15,7 +15,7 @@ const HeroSection = () => {
                     <h1 className="main-title">
                         <ShinyText text="J.H.E.R.V.I.S." />
                     </h1>
-                    <p className="subtitle">Jervin's AI Digital Companion</p>
+                    <p className="subtitle">JHERVIN's AI Digital Companion</p>
                     <p className="invitation">Scroll to explore my portfolio</p>
                 </div>
             </div>

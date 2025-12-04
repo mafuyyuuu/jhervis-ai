@@ -5,6 +5,8 @@ import './AboutSection.css';
 
 const AboutSection = () => {
     const { activeSection } = useScroll();
+    const isActive = activeSection === 'about';
+    
     const achievements = [
         "President's Lister",
         "Best in Research (2021)",
@@ -21,15 +23,15 @@ const AboutSection = () => {
     ];
 
     return (
-        <section id="about">
-            <ScanEffect active={activeSection === 'about'} />
+        <section id="about" className={isActive ? 'section-active' : ''}>
+            <ScanEffect active={isActive} />
             <div className="about-section-content">
                 <h2 className="section-title">ABOUT ME</h2>
                 <div className="row justify-content-center mb-5">
                     <div className="col-md-10">
                         <div className="profile-summary">
                             <p>
-                                I am Jervin Jimenez, a 22-year-old creator and aspiring AI engineer currently studying BSIT at Pamantasan ng Lungsod ng Pasig. With a passion for technology and creativity, I thrive on building innovative solutions and learning new things. My journey is driven by a blend of academic excellence, creative pursuits, and a strong desire for self-growth.
+                                I am Jhervin Jimenez, a 22-year-old creator and aspiring AI engineer currently studying BSIT at Pamantasan ng Lungsod ng Pasig. With a passion for technology and creativity, I thrive on building innovative solutions and learning new things. My journey is driven by a blend of academic excellence, creative pursuits, and a strong desire for self-growth.
                             </p>
                         </div>
                     </div>
@@ -39,13 +41,13 @@ const AboutSection = () => {
                     <div className="col-md-6">
                         <h3 className="subsection-title">Achievements</h3>
                         <ul className="details-list">
-                            {achievements.map((item, index) => <li key={index}>{item}</li>)}
+                            {achievements.map((item, index) => <li key={index} style={{ animationDelay: `${index * 0.1}s` }}>{item}</li>)}
                         </ul>
                     </div>
                     <div className="col-md-6">
                         <h3 className="subsection-title">Soft Skills</h3>
                         <ul className="details-list">
-                            {softSkills.map((item, index) => <li key={index}>{item}</li>)}
+                            {softSkills.map((item, index) => <li key={index} style={{ animationDelay: `${index * 0.1}s` }}>{item}</li>)}
                         </ul>
                     </div>
                 </div>

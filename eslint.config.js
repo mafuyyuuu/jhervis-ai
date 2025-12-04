@@ -24,6 +24,8 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Allow setState in effects for synchronizing with external systems (LiveKit, audio)
+      'react-hooks/set-state-in-effect': 'off',
     },
   },
 ])

@@ -1,31 +1,32 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useVoiceAssistant } from '@livekit/components-react';
 import './ParticleBackground.css';
 
+// Generate particles once outside the component - this is safe as it's module-level
+const INITIAL_PARTICLES = Array.from({ length: 50 }).map(() => ({
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    duration: 5 + Math.random() * 10,
+    delay: Math.random() * 5,
+    size: 1 + Math.random() * 2,
+    opacity: 0.1 + Math.random() * 0.2,
+}));
+
 const ParticleBackground = () => {
     const { audioLevel } = useVoiceAssistant();
-    const particles = useMemo(() => Array.from({ length: 50 }).map(() => ({
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        duration: 5 + Math.random() * 10,
-        delay: Math.random() * 5,
-        size: 1 + Math.random() * 2,
-        opacity: 0.1 + Math.random() * 0.2,
-    })), []);
-    
     const [particleStyles, setParticleStyles] = useState([]);
 
     useEffect(() => {
         const scale = 1 + audioLevel * 5;
         const duration = 5 - audioLevel * 4;
 
-        setParticleStyles(particles.map(p => ({
+        setParticleStyles(INITIAL_PARTICLES.map(p => ({
             ...p,
             scale,
             duration
         })));
         
-    }, [audioLevel, particles]);
+    }, [audioLevel]);
 
     return (
         <div className="particle-background">

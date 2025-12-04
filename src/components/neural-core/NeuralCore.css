@@ -2,25 +2,61 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 50px;
-    position: absolute;
-    top: 50%;
+    justify-content: center;
+    gap: 40px;
+
+    /* KEY FIX: Always fixed. No more jumping between positions. */
+    position: fixed;
+
+    /* Start Center */
+    top: 40%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(1);
+
+    /* Smooth Transition for the glide */
+    transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index: 10;
-    transition: all 0.5s ease-in-out;
 }
 
+/* This class is added when you scroll down */
 .neural-core-wrapper.fixed {
+    /* Move to Bottom Right Corner */
     top: auto;
+    bottom: 140px;
     left: auto;
-    bottom: 40px;
-    right: 40px;
-    transform: scale(0.4);
-    transform-origin: bottom right;
-    gap: 20px;
-    z-index: 1000;
-    position: fixed;
+    right: 440px;
+
+    /* Shrink but keep readable */
+    transform: scale(0.5);
+    gap: 15px;
+
+    z-index: 100;
+}
+
+/* Keep status indicator readable when fixed */
+.neural-core-wrapper.fixed .status-indicator {
+    transform: scale(1.4);
+}
+
+/* ========== MOOD-BASED COLORS ========== */
+.mood-default {
+    --mood-primary: var(--neon-cyan);
+    --mood-glow: rgba(0, 243, 255, 0.3);
+}
+
+.mood-professional {
+    --mood-primary: #00aaff;
+    --mood-glow: rgba(0, 170, 255, 0.3);
+}
+
+.mood-enthusiastic {
+    --mood-primary: #ff9500;
+    --mood-glow: rgba(255, 149, 0, 0.3);
+}
+
+.mood-friendly {
+    --mood-primary: #00ff88;
+    --mood-glow: rgba(0, 255, 136, 0.3);
 }
 
 .reactor-container {
@@ -36,8 +72,9 @@
     position: absolute;
     width: 150%;
     height: 150%;
-    background: radial-gradient(circle, rgba(0, 243, 255, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--mood-glow, rgba(0, 243, 255, 0.1)) 0%, transparent 70%);
     animation: glow-pulse 3s ease-in-out infinite;
+    transition: background 0.5s ease;
 }
 
 .reactor-ring {
@@ -50,31 +87,34 @@
     width: 100%;
     height: 100%;
     border: 2px solid rgba(0, 243, 255, 0.3);
-    border-top-color: var(--neon-cyan);
-    border-bottom-color: var(--neon-cyan);
+    border-top-color: var(--mood-primary, var(--neon-cyan));
+    border-bottom-color: var(--mood-primary, var(--neon-cyan));
     animation: spin 8s linear infinite;
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.2), inset 0 0 30px rgba(0, 243, 255, 0.1);
+    box-shadow: 0 0 30px var(--mood-glow, rgba(0, 243, 255, 0.2)), inset 0 0 30px rgba(0, 243, 255, 0.1);
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .ring-2 {
     width: 70%;
     height: 70%;
     border: 2px solid rgba(0, 243, 255, 0.2);
-    border-left-color: var(--neon-cyan);
-    border-right-color: var(--neon-cyan);
+    border-left-color: var(--mood-primary, var(--neon-cyan));
+    border-right-color: var(--mood-primary, var(--neon-cyan));
     animation: spin-reverse 5s linear infinite;
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 20px var(--mood-glow, rgba(0, 243, 255, 0.3));
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
 }
 
 .ring-3 {
     width: 40%;
     height: 40%;
-    background: radial-gradient(circle, rgba(0, 243, 255, 0.2) 0%, rgba(0, 243, 255, 0.05) 100%);
-    border: 1px solid var(--neon-cyan);
-    box-shadow: 0 0 40px rgba(0, 243, 255, 0.4), inset 0 0 20px rgba(0, 243, 255, 0.2);
+    background: radial-gradient(circle, var(--mood-glow, rgba(0, 243, 255, 0.2)) 0%, rgba(0, 243, 255, 0.05) 100%);
+    border: 1px solid var(--mood-primary, var(--neon-cyan));
+    box-shadow: 0 0 40px var(--mood-glow, rgba(0, 243, 255, 0.4)), inset 0 0 20px rgba(0, 243, 255, 0.2);
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: border-color 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
 }
 
 .core-dot {
@@ -82,15 +122,16 @@
     height: 12px;
     background: #fff;
     border-radius: 50%;
-    box-shadow: 0 0 30px #fff, 0 0 60px var(--neon-cyan);
+    box-shadow: 0 0 30px #fff, 0 0 60px var(--mood-primary, var(--neon-cyan));
     animation: core-pulse 1.5s ease-in-out infinite;
+    transition: box-shadow 0.5s ease;
 }
 
 /* Speaking State */
 .reactor-speaking .ring-1 {
     animation-duration: 2s;
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 50px rgba(0, 243, 255, 0.5), inset 0 0 50px rgba(0, 243, 255, 0.3);
+    border-color: var(--mood-primary, var(--neon-cyan));
+    box-shadow: 0 0 50px var(--mood-glow, rgba(0, 243, 255, 0.5)), inset 0 0 50px rgba(0, 243, 255, 0.3);
 }
 
 .reactor-speaking .ring-2 {
@@ -100,7 +141,7 @@
 
 .reactor-speaking .ring-3 {
     transform: scale(1.1);
-    background: radial-gradient(circle, rgba(0, 243, 255, 0.4) 0%, rgba(0, 243, 255, 0.1) 100%);
+    background: radial-gradient(circle, var(--mood-glow, rgba(0, 243, 255, 0.4)) 0%, rgba(0, 243, 255, 0.1) 100%);
 }
 
 .reactor-speaking .reactor-glow {
@@ -141,38 +182,43 @@
     align-items: center;
     gap: 10px;
     padding: 10px 25px;
-    background: var(--glass-bg);
+    background: rgba(5, 15, 30, 0.8);
     border: 1px solid var(--glass-border);
     border-radius: 30px;
     backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 }
 
 .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--neon-cyan);
-    box-shadow: 0 0 10px var(--neon-cyan);
+    background: var(--mood-primary, var(--neon-cyan));
+    box-shadow: 0 0 10px var(--mood-primary, var(--neon-cyan));
     animation: blink 2s infinite;
+    transition: background 0.5s ease, box-shadow 0.5s ease;
 }
 
 .status-text {
     font-size: 12px;
     letter-spacing: 4px;
     font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .status-speaking .status-dot {
-    background: var(--neon-cyan);
+    background: var(--mood-primary, var(--neon-cyan));
     animation: none;
 }
 
 .status-listening .status-dot {
     background: #00ff88;
+    box-shadow: 0 0 10px #00ff88;
 }
 
 .status-thinking .status-dot {
     background: #ffaa00;
+    box-shadow: 0 0 10px #ffaa00;
     animation: blink 0.5s infinite;
 }
 
@@ -184,4 +230,17 @@
 @keyframes core-pulse {
     0%, 100% { opacity: 0.8; transform: scale(1); }
     50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+    to { transform: rotate(-360deg); }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
 }
