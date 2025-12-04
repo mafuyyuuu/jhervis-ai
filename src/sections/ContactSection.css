@@ -1,0 +1,45 @@
+.contact-section-content {
+    text-align: center;
+}
+
+.contact-section-content p {
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.holo-btn {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--neon-cyan);
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.holo-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.holo-btn:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+}
+
+.holo-btn:hover::before {
+    left: 100%;
+}

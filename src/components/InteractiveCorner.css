@@ -1,0 +1,40 @@
+.interactive-corner {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.interactive-corner .chat-input-wrapper {
+    flex-grow: 1;
+}
+
+.control-bar-wrapper .lk-control-bar {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.control-bar-wrapper .lk-button {
+    background: var(--glass-bg) !important;
+    border: 1px solid var(--glass-border) !important;
+    width: 55px !important;
+    height: 55px !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+}
+
+.control-bar-wrapper .lk-button:hover {
+    background: rgba(0, 243, 255, 0.1) !important;
+    border-color: var(--neon-cyan) !important;
+}
+
+.control-bar-wrapper .lk-button svg {
+    color: var(--neon-cyan) !important;
+    filter: drop-shadow(0 0 8px rgba(0, 243, 255, 0.6));
+    width: 20px !important;
+    height: 20px !important;
+}
