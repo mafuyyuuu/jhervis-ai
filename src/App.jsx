@@ -115,8 +115,10 @@ const PortfolioPage = () => {
 
     // Section change with sound and narration
     useEffect(() => {
-        if (activeSection && activeSection !== lastNarratedSection.current && isScrolled && room) {
-            soundEffects.playSectionChange();
+        if (activeSection && activeSection !== lastNarratedSection.current && room && room.state === 'connected') {
+            if (isScrolled) {
+                soundEffects.playSectionChange();
+            }
             lastNarratedSection.current = activeSection;
             
             const narrationEvent = {
@@ -125,9 +127,11 @@ const PortfolioPage = () => {
             };
             const encoder = new TextEncoder();
             const data = encoder.encode(JSON.stringify(narrationEvent));
-            room.localParticipant.publishData(data, { reliable: true });
+            room.localParticipant.publishData(data, { reliable: true }).catch(err => {
+                console.warn('Failed to publish narration:', err);
+            });
         }
-    }, [activeSection, isScrolled, room]);
+    }, [activeSection, isScrolled, room, room?.state]);
     
     const handleQuerySubmit = useCallback((query) => {
         soundEffects.playClick();
@@ -135,14 +139,21 @@ const PortfolioPage = () => {
         messageIdRef.current += 1;
         setLastUserMessage({ id: messageIdRef.current, text: query });
         
+        if (room?.state !== 'connected') {
+            console.warn('Room not connected, cannot send query');
+            return;
+        }
+        
         const queryEvent = {
             type: "user_query",
             query: query,
         };
         const encoder = new TextEncoder();
         const data = encoder.encode(JSON.stringify(queryEvent));
-        room.localParticipant.publishData(data, { topic: "user_query" });
-    }, [room]);
+        room.localParticipant.publishData(data, { topic: "user_query" }).catch(err => {
+            console.warn('Failed to publish query:', err);
+        });
+    }, [room, room?.state]);
 
     const handleIdleAsk = useCallback((query) => {
         handleQuerySubmit(query);

@@ -16,15 +16,15 @@ const ContactSection = () => {
                     I'm always open to discussing new projects, creative ideas, or opportunities to be part of an amazing team. Feel free to reach out.
                 </p>
                 <div className="contact-buttons">
-                    <a href="mailto:jhervinjimenez@example.com" className="holo-btn primary">
+                    <a href="mailto:jhervinjimenez03@gmail.com" className="holo-btn primary">
                         <i className="ri-mail-line btn-icon"></i>
                         SAY HELLO
                     </a>
-                    <a href="https://github.com/jhervinjimenez" target="_blank" rel="noopener noreferrer" className="holo-btn secondary">
+                    <a href="https://github.com/mafuyyuuu" target="_blank" rel="noopener noreferrer" className="holo-btn secondary">
                         <i className="ri-github-fill btn-icon"></i>
                         GITHUB
                     </a>
-                    <a href="https://linkedin.com/in/jhervinjimenez" target="_blank" rel="noopener noreferrer" className="holo-btn secondary">
+                    <a href="https://www.linkedin.com/in/jhervin-jimenez-374730169/" target="_blank" rel="noopener noreferrer" className="holo-btn secondary">
                         <i className="ri-linkedin-box-fill btn-icon"></i>
                         LINKEDIN
                     </a>
