@@ -1,27 +1,103 @@
-.projects-section-content {
-    width: 100%;
+.projects-scroll-section {
+    min-height: 360vh;
+    padding: 0;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+.projects-sticky-shell {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding: 120px 64px 56px;
+    display: flex;
+    flex-direction: column;
+}
+
+.projects-header-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.projects-header-row .section-title {
+    margin: 0;
+}
+
+.projects-counter {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.85rem;
+    letter-spacing: 0.12rem;
 }
 
 .section-subtitle {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.9rem;
-    margin-bottom: 2rem;
-    letter-spacing: 1px;
+    margin: 0.6rem 0 1.2rem;
+    color: rgba(255, 255, 255, 0.74);
+    font-size: 0.95rem;
+    letter-spacing: 0.06rem;
 }
 
-.project-col {
-    opacity: 0;
-    animation: project-fade-in 0.6s ease forwards;
+.projects-progress-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    margin-bottom: 1.4rem;
 }
 
-@keyframes project-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.projects-progress-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--neon-cyan), rgba(0, 102, 255, 0.92));
+    transition: width 0.15s linear;
+}
+
+.projects-horizontal-viewport {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.projects-track {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 8px 8px 8px 0;
+    will-change: transform;
+}
+
+.projects-slide {
+    flex: 0 0 min(78vw, 460px);
+    max-width: 460px;
+    opacity: 0.65;
+    transform: scale(0.96);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.projects-slide.is-current {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.slide-meta {
+    margin-bottom: 8px;
+}
+
+.slide-meta h3 {
+    margin: 3px 0 0;
+    font-size: 1.1rem;
+}
+
+.slide-role {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    letter-spacing: 0.08rem;
+}
+
+.projects-slide .project-card-scene {
+    height: 500px;
 }

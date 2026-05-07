@@ -1,16 +1,105 @@
-# React + Vite
+# JHERVIS AI Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project has 3 parts that run together:
 
-Currently, two official plugins are available:
+1. React frontend (Vite)
+2. Flask token server (creates LiveKit access tokens)
+3. LiveKit agent worker (voice AI with Gemini)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Prerequisites
 
-## React Compiler
+- Node.js 18+ and npm
+- Python 3.10+ (recommended 3.11+)
+- A LiveKit project (Cloud or self-hosted) with API key/secret
+- A Google API key for Gemini realtime model access
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 1) Install frontend dependencies
 
-## Expanding the ESLint configuration
+```bash
+cd /Users/jhervin/WebstormProjects/jhervis-ai
+npm install
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 2) Set up Python environment
+
+```bash
+cd /Users/jhervin/WebstormProjects/jhervis-ai/agent
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+If `python3.11` is not installed on macOS:
+
+```bash
+brew install python@3.11
+```
+
+## 3) Configure environment variables
+
+Create `agent/.env` based on `agent/.env.example`:
+
+```bash
+cd /Users/jhervin/WebstormProjects/jhervis-ai/agent
+cp .env.example .env
+```
+
+```env
+LIVEKIT_URL=wss://your-livekit-host
+LIVEKIT_API_KEY=your_livekit_api_key
+LIVEKIT_API_SECRET=your_livekit_api_secret
+GOOGLE_API_KEY=your_google_api_key
+# optional
+# TOKEN_SERVER_PORT=5000
+```
+
+Optional frontend variables (`.env` in project root):
+
+```env
+VITE_LIVEKIT_URL=wss://your-livekit-host
+VITE_TOKEN_SERVER_URL=http://localhost:5005/getToken
+```
+
+If `VITE_LIVEKIT_URL` is not set, the app falls back to:
+`wss://jhervis-iiqthr75.livekit.cloud`
+
+If `VITE_TOKEN_SERVER_URL` is not set, the app falls back to:
+`http://localhost:5005/getToken`
+
+## 4) Run the app (3 terminals)
+
+Terminal A (frontend):
+
+```bash
+cd /Users/jhervin/WebstormProjects/jhervis-ai
+npm run dev
+```
+
+Terminal B (token server):
+
+```bash
+cd /Users/jhervin/WebstormProjects/jhervis-ai/agent
+source .venv/bin/activate
+python token_server.py
+```
+
+Terminal C (agent worker):
+
+```bash
+cd /Users/jhervin/WebstormProjects/jhervis-ai/agent
+source .venv/bin/activate
+python agent.py dev
+```
+
+If `python agent.py dev` is not available in your installed `livekit-agents` version, try:
+
+```bash
+python agent.py start
+```
+
+## Useful scripts
+
+- `npm run dev` - run frontend in development
+- `npm run build` - production build
+- `npm run lint` - ESLint checks
+- `npm run preview` - preview built frontend

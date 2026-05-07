@@ -1,3 +1,11 @@
+import sys
+
+if sys.version_info < (3, 10):
+    raise RuntimeError(
+        "JHERVIS agent requires Python 3.10+ (recommended 3.11+). "
+        "Create the venv with a newer Python binary and reinstall requirements."
+    )
+
 from dotenv import load_dotenv
 import json
 import asyncio
@@ -23,9 +31,39 @@ async def entrypoint(ctx: agents.JobContext):
             model="gemini-2.5-flash-native-audio-preview-09-2025",
             voice="Aoede"
         ),
+        min_endpointing_delay=0.2,
+        max_endpointing_delay=1.2,
+        preemptive_generation=True,
     )
 
-    narrated_sections = set()
+    greeted_identities = set()
+    narrated_sections_by_identity = {}
+    room_disconnected = asyncio.Event()
+
+    async def speak_reply(**kwargs):
+        await session.generate_reply(input_modality="audio", **kwargs)
+
+    async def send_welcome(identity: str):
+        if identity in greeted_identities:
+            return
+        greeted_identities.add(identity)
+        print(f"Sending welcome greeting to: {identity}")
+        await speak_reply(instructions=SESSION_INSTRUCTIONS)
+
+    @ctx.room.on("participant_connected")
+    def on_participant_connected(participant: rtc.RemoteParticipant):
+        identity = participant.identity or "unknown"
+        asyncio.create_task(send_welcome(identity))
+
+    @ctx.room.on("participant_disconnected")
+    def on_participant_disconnected(participant: rtc.RemoteParticipant):
+        identity = participant.identity or "unknown"
+        narrated_sections_by_identity.pop(identity, None)
+        greeted_identities.discard(identity)
+
+    @ctx.room.on("disconnected")
+    def on_room_disconnected():
+        room_disconnected.set()
 
     @ctx.room.on("data_received")
     def on_data_received(data: rtc.DataPacket):
@@ -36,20 +74,28 @@ async def entrypoint(ctx: agents.JobContext):
                 
                 event = json.loads(payload)
                 event_type = event.get("type")
+                sender = getattr(data, "participant", None)
+                sender_identity = sender.identity if sender and sender.identity else "unknown"
 
                 if event_type == "narration":
                     section = event.get("section")
-                    if section in NARRATION_PROMPTS and section not in narrated_sections:
-                        narrated_sections.add(section)
+                    sections = narrated_sections_by_identity.setdefault(sender_identity, set())
+                    if section in NARRATION_PROMPTS and section not in sections:
+                        sections.add(section)
                         prompt = NARRATION_PROMPTS[section]
-                        print(f"Narrating: {section}")
-                        await session.generate_reply(instructions=prompt)
-                        
+                        print(f"Narrating for {sender_identity}: {section}")
+                        await speak_reply(instructions=prompt)
+
+                elif event_type == "welcome_request":
+                    print(f"Welcome requested by {sender_identity}")
+                    await speak_reply(instructions=SESSION_INSTRUCTIONS)
+                         
                 elif event_type == "user_query":
                     query = event.get("query")
                     if query:
-                        print(f"Query: {query}")
-                        await session.generate_reply(user_input=query)
+                        print(f"Query from {sender_identity}: {query}")
+                        await session.interrupt(force=True)
+                        await speak_reply(user_input=query)
 
             except Exception as e:
                 print(f"Error: {e}")
@@ -59,16 +105,16 @@ async def entrypoint(ctx: agents.JobContext):
     await session.start(
         room=ctx.room,
         agent=Assistant(),
-        room_input_options=RoomInputOptions(),
+        room_input_options=RoomInputOptions(audio_frame_size_ms=20),
     )
 
-    # Welcome greeting
-    await asyncio.sleep(2)
-    print("Sending welcome greeting...")
-    await session.generate_reply(instructions=SESSION_INSTRUCTIONS)
+    existing_participants = getattr(ctx.room, "remote_participants", {})
+    for participant in existing_participants.values():
+        identity = participant.identity or "unknown"
+        asyncio.create_task(send_welcome(identity))
     
-    # Keep session alive until disconnected
-    await ctx.room.disconnected()
+    # Keep session alive for this job until the room disconnects.
+    await room_disconnected.wait()
 
 
 if __name__ == "__main__":

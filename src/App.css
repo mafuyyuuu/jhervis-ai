@@ -23,6 +23,11 @@ body {
     overflow-x: hidden;
 }
 
+[data-lk-theme],
+[data-lk-theme] .lk-room-container {
+    background: transparent !important;
+}
+
 /* Grid overlay */
 body::before {
     content: '';
@@ -49,7 +54,7 @@ section {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 100px 50px;
+    padding: 128px 64px;
     border-bottom: 1px solid var(--glass-border);
 }
 
@@ -77,6 +82,83 @@ section {
     font-size: 12px;
     letter-spacing: 5px;
     animation: blink 1.5s infinite;
+}
+
+/* ========== EXPERIENCE START ========== */
+.experience-gate {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    background: radial-gradient(circle at center, rgba(3, 3, 8, 0.35), rgba(3, 3, 8, 0.82));
+    backdrop-filter: blur(2px);
+}
+
+.experience-card {
+    max-width: 460px;
+    width: calc(100% - 32px);
+    text-align: center;
+    padding: 32px 28px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background: rgba(6, 16, 34, 0.86);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+}
+
+.experience-card h2 {
+    margin: 0 0 10px;
+    letter-spacing: 0.08em;
+}
+
+.experience-card p {
+    margin: 0 0 20px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.95rem;
+}
+
+.experience-start-btn {
+    border: 1px solid var(--neon-cyan);
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.22), rgba(0, 102, 255, 0.2));
+    color: var(--neon-cyan);
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-size: 0.92rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.experience-start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 26px rgba(0, 243, 255, 0.35);
+}
+
+.connection-pill {
+    position: fixed;
+    top: 22px;
+    left: 22px;
+    z-index: 1100;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: rgba(5, 15, 30, 0.85);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    padding: 8px 12px;
+}
+
+.connection-pill.is-ready {
+    border-color: rgba(0, 255, 136, 0.55);
+}
+
+.connection-pill.is-connecting {
+    border-color: rgba(255, 149, 0, 0.45);
+}
+
+.connection-pill.is-blocked {
+    border-color: rgba(255, 0, 255, 0.4);
 }
 
 @keyframes spin {
@@ -311,6 +393,34 @@ section.section-active::after {
     transform: scale(1.05);
 }
 
+.voice-hint-pill {
+    position: fixed;
+    top: 22px;
+    right: 76px;
+    z-index: 1000;
+    padding: 9px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: rgba(5, 15, 30, 0.86);
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.voice-hint-pill:hover {
+    transform: translateY(-1px);
+    border-color: var(--neon-cyan);
+}
+
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+    outline: 2px solid var(--neon-cyan);
+    outline-offset: 2px;
+}
+
 /* ========== KEYBOARD HINT ========== */
 .keyboard-hint {
     position: fixed;
@@ -366,4 +476,21 @@ section.section-active::after {
 @keyframes idle-fade-in {
     from { opacity: 0; transform: translateX(-50%) translateY(20px); }
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@media (max-width: 992px) {
+    section {
+        padding: 108px 28px;
+    }
 }

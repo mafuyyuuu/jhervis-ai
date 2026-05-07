@@ -30,12 +30,24 @@ const ProjectCard = ({ project }) => {
         setShowTip(false);
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCardClick();
+        }
+    };
+
     return (
         <div 
             className="project-card-scene" 
             onClick={handleCardClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            role="button"
+            tabIndex={0}
+            onKeyDown={handleKeyDown}
+            aria-label={`${project.title} details`}
+            aria-pressed={isFlipped}
         >
             {/* AI Tip Tooltip */}
             {showTip && !isFlipped && PROJECT_TIPS[project.id] && (
@@ -48,13 +60,14 @@ const ProjectCard = ({ project }) => {
             <div className={`project-card-inner ${isFlipped ? 'is-flipped' : ''}`}>
                 <div className="project-card-face card-front">
                     <div className="project-image-container">
-                        <img src={project.image} alt={project.title} className="project-image" />
+                        <img src={project.image} alt={project.title} className="project-image" loading="lazy" decoding="async" />
                         <div className="project-image-overlay"></div>
                     </div>
                     <div className="project-content">
                         <span className="project-type">{project.type}</span>
                         <h3>{project.title}</h3>
                         <p>{project.description}</p>
+                        {project.outcome && <p className="project-outcome"><strong>Outcome:</strong> {project.outcome}</p>}
                         <span className="click-hint">Click to see details</span>
                     </div>
                 </div>
@@ -68,8 +81,8 @@ const ProjectCard = ({ project }) => {
                             ))}
                         </div>
                         <div className="card-links">
-                            <a href={project.liveDemoUrl} className="card-link">Live Demo</a>
-                            <a href={project.sourceCodeUrl} className="card-link">Source Code</a>
+                            <a href={project.liveDemoUrl} className="card-link" target="_blank" rel="noopener noreferrer">Live Demo</a>
+                            <a href={project.sourceCodeUrl} className="card-link" target="_blank" rel="noopener noreferrer">Source Code</a>
                         </div>
                     </div>
                 </div>

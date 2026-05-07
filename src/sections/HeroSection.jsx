@@ -16,6 +16,16 @@ const HeroSection = () => {
                         <ShinyText text="J.H.E.R.V.I.S." />
                     </h1>
                     <p className="subtitle">JHERVIN's AI Digital Companion</p>
+                    <p className="value-prop">AI-powered interactive portfolio for internship, junior, and freelance opportunities.</p>
+                    <div className="hero-signals" aria-label="Credibility highlights">
+                        <span>5 showcased builds</span>
+                        <span>BSIT @ PLP</span>
+                        <span>President&apos;s Lister</span>
+                    </div>
+                    <div className="hero-cta-group">
+                        <a href="#projects" className="hero-cta primary">View Case Studies</a>
+                        <a href="https://github.com/mafuyyuuu" target="_blank" rel="noopener noreferrer" className="hero-cta secondary">GitHub Profile</a>
+                    </div>
                     <p className="invitation">Scroll to explore my portfolio</p>
                 </div>
             </div>

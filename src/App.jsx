@@ -1,16 +1,11 @@
-import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
-import { LiveKitRoom, RoomAudioRenderer, useRoomContext, ControlBar, useVoiceAssistant } from "@livekit/components-react";
+import { lazy, Suspense, useEffect, useState, useMemo, useRef, useCallback } from 'react';
+import { LiveKitRoom, RoomAudioRenderer, useRoomContext, ControlBar, useVoiceAssistant, useAudioPlayback } from "@livekit/components-react";
 import "@livekit/components-styles";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './components/ThemedScrollbar.css';
 import './components/ParticleBackground.css';
 
-import HeroSection from "./sections/HeroSection";
-import AboutSection from "./sections/AboutSection";
-import ProjectsSection from "./sections/ProjectsSection";
-import SkillsSection from "./sections/SkillsSection";
-import ContactSection from "./sections/ContactSection";
 import NeuralCore from "./components/neural-core/NeuralCore";
 
 import { useScrollSpy } from "./hooks/useScrollSpy";
@@ -27,23 +22,32 @@ import IdlePrompt from "./components/IdlePrompt";
 import QuickActions from "./components/QuickActions";
 import soundEffects from "./utils/soundEffects";
 
+const HeroSection = lazy(() => import("./sections/HeroSection"));
+const AboutSection = lazy(() => import("./sections/AboutSection"));
+const ProjectsSection = lazy(() => import("./sections/ProjectsSection"));
+const SkillsSection = lazy(() => import("./sections/SkillsSection"));
+const ContactSection = lazy(() => import("./sections/ContactSection"));
+
 const PortfolioPage = () => {
     const room = useRoomContext();
     const { state: agentState } = useVoiceAssistant();
+    const { canPlayAudio, startAudio } = useAudioPlayback(room);
     const sectionIds = useMemo(() => ["hero", "about", "projects", "skills", "contact"], []);
     const activeSection = useScrollSpy(sectionIds, { threshold: 0.5 });
     const [isScrolled, setIsScrolled] = useState(false);
     const [scrollSpeed, setScrollSpeed] = useState(0);
-    const [hasWelcomed, setHasWelcomed] = useState(false);
     const [showIdlePrompt, setShowIdlePrompt] = useState(false);
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [lastUserMessage, setLastUserMessage] = useState(null);
+    const [hasEnteredExperience, setHasEnteredExperience] = useState(false);
+    const [welcomeRequested, setWelcomeRequested] = useState(false);
     const lastScrollY = useRef(0);
     const lastScrollTime = useRef(0);
     const lastNarratedSection = useRef(null);
     const lastAgentState = useRef(null);
     const idleTimerRef = useRef(null);
     const messageIdRef = useRef(0);
+    const isRoomConnected = room?.state === 'connected';
     
     // Initialize time ref on mount
     useEffect(() => {
@@ -113,25 +117,34 @@ const PortfolioPage = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    const publishEvent = useCallback((event) => {
+        if (!isRoomConnected) return;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(JSON.stringify(event));
+        room.localParticipant.publishData(data, { reliable: true }).catch(err => {
+            console.warn('Failed to publish event:', err);
+        });
+    }, [room, isRoomConnected]);
+
     // Section change with sound and narration
     useEffect(() => {
-        if (activeSection && activeSection !== lastNarratedSection.current && room && room.state === 'connected') {
+        if (
+            hasEnteredExperience &&
+            activeSection &&
+            activeSection !== lastNarratedSection.current &&
+            isRoomConnected
+        ) {
             if (isScrolled) {
                 soundEffects.playSectionChange();
             }
             lastNarratedSection.current = activeSection;
-            
-            const narrationEvent = {
+
+            publishEvent({
                 type: "narration",
                 section: activeSection,
-            };
-            const encoder = new TextEncoder();
-            const data = encoder.encode(JSON.stringify(narrationEvent));
-            room.localParticipant.publishData(data, { reliable: true }).catch(err => {
-                console.warn('Failed to publish narration:', err);
             });
         }
-    }, [activeSection, isScrolled, room, room?.state]);
+    }, [activeSection, isScrolled, isRoomConnected, publishEvent, hasEnteredExperience]);
     
     const handleQuerySubmit = useCallback((query) => {
         soundEffects.playClick();
@@ -139,21 +152,16 @@ const PortfolioPage = () => {
         messageIdRef.current += 1;
         setLastUserMessage({ id: messageIdRef.current, text: query });
         
-        if (room?.state !== 'connected') {
+        if (!isRoomConnected) {
             console.warn('Room not connected, cannot send query');
             return;
         }
         
-        const queryEvent = {
+        publishEvent({
             type: "user_query",
             query: query,
-        };
-        const encoder = new TextEncoder();
-        const data = encoder.encode(JSON.stringify(queryEvent));
-        room.localParticipant.publishData(data, { topic: "user_query" }).catch(err => {
-            console.warn('Failed to publish query:', err);
         });
-    }, [room, room?.state]);
+    }, [isRoomConnected, publishEvent]);
 
     const handleIdleAsk = useCallback((query) => {
         handleQuerySubmit(query);
@@ -165,6 +173,58 @@ const PortfolioPage = () => {
         setSoundEnabled(newState);
     }, []);
 
+    const unlockAudio = useCallback(async () => {
+        try {
+            await startAudio();
+        } catch {
+            // continue in text mode if autoplay stays blocked
+        }
+    }, [startAudio]);
+
+    useEffect(() => {
+        if (!hasEnteredExperience || canPlayAudio) return;
+
+        const handleUserGesture = () => unlockAudio();
+        window.addEventListener("pointerdown", handleUserGesture);
+        window.addEventListener("keydown", handleUserGesture);
+
+        return () => {
+            window.removeEventListener("pointerdown", handleUserGesture);
+            window.removeEventListener("keydown", handleUserGesture);
+        };
+    }, [canPlayAudio, unlockAudio, hasEnteredExperience]);
+
+    const handleStartExperience = useCallback(async () => {
+        setHasEnteredExperience(true);
+        await unlockAudio();
+    }, [unlockAudio]);
+
+    useEffect(() => {
+        if (!canPlayAudio) {
+            setWelcomeRequested(false);
+            return;
+        }
+        if (!hasEnteredExperience || welcomeRequested || !isRoomConnected) return;
+        publishEvent({ type: "welcome_request" });
+        setWelcomeRequested(true);
+    }, [hasEnteredExperience, welcomeRequested, publishEvent, canPlayAudio, isRoomConnected]);
+
+    const connectionText = !isRoomConnected
+        ? "Connecting to voice room..."
+        : !canPlayAudio
+            ? "Connected • Tap to enable audio"
+            : agentState === "speaking"
+                ? "JHERVIS is speaking"
+                : agentState === "listening"
+                    ? "Listening..."
+                    : "Connected • Voice ready";
+
+    const connectionStateClass = !isRoomConnected
+        ? "is-connecting"
+        : !canPlayAudio
+            ? "is-blocked"
+            : "is-ready";
+
     return (
         <ScrollProvider value={{ activeSection }}>
             <NeuralCore isFixed={isScrolled} scrollSpeed={scrollSpeed} />
@@ -173,6 +233,21 @@ const PortfolioPage = () => {
 
             <main className="container-fluid">
                 <ParticleBackground />
+                <div className={`connection-pill ${connectionStateClass}`} role="status" aria-live="polite">
+                    {connectionText}
+                </div>
+
+                {!hasEnteredExperience && (
+                    <div className="experience-gate">
+                        <div className="experience-card">
+                            <h2>Start Experience</h2>
+                            <p>Interactive voice portfolio with chat fallback.</p>
+                            <button className="experience-start-btn" onClick={handleStartExperience}>
+                                Enter Portfolio
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Idle Prompt */}
                 <IdlePrompt 
@@ -204,11 +279,19 @@ const PortfolioPage = () => {
                     <i className={soundEnabled ? 'ri-volume-up-line' : 'ri-volume-mute-line'}></i>
                 </button>
 
-                <HeroSection />
-                <AboutSection />
-                <ProjectsSection />
-                <SkillsSection />
-                <ContactSection />
+                {hasEnteredExperience && !canPlayAudio && (
+                    <button className="voice-hint-pill" onClick={unlockAudio}>
+                        Tap to enable voice
+                    </button>
+                )}
+
+                <Suspense fallback={null}>
+                    <HeroSection />
+                    <AboutSection />
+                    <ProjectsSection />
+                    <SkillsSection />
+                    <ContactSection />
+                </Suspense>
             </main>
         </ScrollProvider>
     );
@@ -217,16 +300,17 @@ const PortfolioPage = () => {
 // --- MAIN APP ---
 export default function App() {
     const [token, setToken] = useState("");
+    const tokenEndpoint = import.meta.env.VITE_TOKEN_SERVER_URL || "http://localhost:5005/getToken";
 
     useEffect(() => {
         (async () => {
             try {
-                const resp = await fetch("http://localhost:5000/getToken");
+                const resp = await fetch(tokenEndpoint);
                 const data = await resp.text();
                 setToken(data);
             } catch (e) { console.error(e); }
         })();
-    }, []);
+    }, [tokenEndpoint]);
 
     if (!token) {
         return (

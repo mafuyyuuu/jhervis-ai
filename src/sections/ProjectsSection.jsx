@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import ProjectCard from '../components/ProjectCard';
 import ScanEffect from '../components/ScanEffect';
 import { useScroll } from '../contexts/ScrollContext';
@@ -14,8 +14,9 @@ const MY_PROJECTS = [
         longDescription: "This full-stack application was developed as a major academic project to simulate a real-world payroll system. It features role-based access control for employees and administrators, automated salary calculation, and detailed payslip generation.",
         technologies: ["React", "Node.js", "Express", "MySQL", "Bootstrap"],
         role: "Full-Stack Developer",
-        liveDemoUrl: "#",
-        sourceCodeUrl: "#",
+        outcome: "Automated core payroll calculations and organized records into one dashboard.",
+        liveDemoUrl: "https://github.com/mafuyyuuu",
+        sourceCodeUrl: "https://github.com/mafuyyuuu",
     },
     { 
         id: 2, 
@@ -26,8 +27,9 @@ const MY_PROJECTS = [
         longDescription: "This is the very portfolio you are interacting with now. It's an exploration into creating an AI-driven user experience using real-time voice and chat, powered by Google Gemini and LiveKit's agent framework.",
         technologies: ["React", "Python", "LiveKit", "Google Gemini", "Vite"],
         role: "AI Engineer & Frontend Developer",
-        liveDemoUrl: "#",
-        sourceCodeUrl: "#",
+        outcome: "Delivered a realtime voice + chat portfolio assistant integrated with LiveKit.",
+        liveDemoUrl: "https://jhervis-ai.vercel.app",
+        sourceCodeUrl: "https://github.com/mafuyyuuu/jhervis-ai",
     },
     { 
         id: 3, 
@@ -38,8 +40,9 @@ const MY_PROJECTS = [
         longDescription: "A desktop application built with Java and JavaFX for managing a library's inventory. It includes features for adding, searching, borrowing, and returning books, as well as managing borrower information.",
         technologies: ["Java", "JavaFX", "MySQL", "SceneBuilder"],
         role: "Lead Developer",
-        liveDemoUrl: "#",
-        sourceCodeUrl: "#",
+        outcome: "Centralized borrowing, returns, and inventory tracking in one workflow.",
+        liveDemoUrl: "https://github.com/mafuyyuuu",
+        sourceCodeUrl: "https://github.com/mafuyyuuu",
     },
     { 
         id: 4, 
@@ -50,8 +53,9 @@ const MY_PROJECTS = [
         longDescription: "A conceptual game project focused on narrative design and player choice. The development process involved scriptwriting, character design, and prototyping core gameplay loops in a small team setting.",
         technologies: ["Unity (Conceptual)", "Narrative Design"],
         role: "Writer & Game Designer",
-        liveDemoUrl: "#",
-        sourceCodeUrl: "#",
+        outcome: "Built a narrative prototype focused on player-choice storytelling.",
+        liveDemoUrl: "https://github.com/mafuyyuuu",
+        sourceCodeUrl: "https://github.com/mafuyyuuu",
     },
     { 
         id: 5, 
@@ -62,31 +66,105 @@ const MY_PROJECTS = [
         longDescription: "A web application designed to streamline the employee performance review process. It allows employees to set goals and managers to review and rate performance against those goals, generating a final IPCR report.",
         technologies: ["PHP", "MySQL", "Bootstrap", "jQuery"],
         role: "Full-Stack Developer",
-        liveDemoUrl: "#",
-        sourceCodeUrl: "#",
+        outcome: "Structured employee goals and review flow into a single web process.",
+        liveDemoUrl: "https://github.com/mafuyyuuu",
+        sourceCodeUrl: "https://github.com/mafuyyuuu",
     },
 ];
 
 const ProjectsSection = () => {
-    const { activeSection, hoveredProjectId } = useScroll();
+    const { activeSection } = useScroll();
     const isActive = activeSection === 'projects';
-    
+    const sectionRef = useRef(null);
+    const viewportRef = useRef(null);
+    const trackRef = useRef(null);
+    const [progress, setProgress] = useState(0);
+    const [maxTranslate, setMaxTranslate] = useState(0);
+
+    useEffect(() => {
+        const updateMaxTranslate = () => {
+            if (!viewportRef.current || !trackRef.current) return;
+            const nextMax = Math.max(0, trackRef.current.scrollWidth - viewportRef.current.clientWidth);
+            setMaxTranslate(nextMax);
+        };
+
+        updateMaxTranslate();
+        window.addEventListener("resize", updateMaxTranslate);
+        return () => window.removeEventListener("resize", updateMaxTranslate);
+    }, []);
+
+    useEffect(() => {
+        let rafId = null;
+
+        const handleScroll = () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                if (!sectionRef.current) return;
+                const section = sectionRef.current;
+                const totalScroll = section.offsetHeight - window.innerHeight;
+                if (totalScroll <= 0) {
+                    setProgress(0);
+                    return;
+                }
+
+                const rect = section.getBoundingClientRect();
+                const scrolled = Math.min(Math.max(-rect.top, 0), totalScroll);
+                setProgress(scrolled / totalScroll);
+            });
+        };
+
+        handleScroll();
+        window.addEventListener("scroll", handleScroll, { passive: true });
+
+        return () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+    const currentSlide = useMemo(
+        () => Math.min(MY_PROJECTS.length - 1, Math.round(progress * (MY_PROJECTS.length - 1))),
+        [progress]
+    );
+
+    const trackStyle = {
+        transform: `translate3d(-${progress * maxTranslate}px, 0, 0)`,
+    };
+
     return (
-        <section id="projects" className={isActive ? 'section-active' : ''}>
+        <section
+            id="projects"
+            ref={sectionRef}
+            className={`${isActive ? 'section-active' : ''} projects-scroll-section`}
+        >
             <ScanEffect active={isActive} />
-            <div className="projects-section-content">
-                <h2 className="section-title">PROJECTS</h2>
-                <p className="section-subtitle">Click on any project to see more details</p>
-                <div className="row g-4">
-                    {MY_PROJECTS.map((project, index) => (
-                        <div 
-                            className={`col-md-4 project-col ${hoveredProjectId === project.id ? 'glow' : ''}`} 
-                            key={project.id}
-                            style={{ animationDelay: `${index * 0.1}s` }}
-                        >
+            <div className="projects-sticky-shell">
+                <div className="projects-header-row">
+                    <h2 className="section-title">PROJECTS</h2>
+                    <span className="projects-counter">
+                        {String(currentSlide + 1).padStart(2, '0')} / {String(MY_PROJECTS.length).padStart(2, '0')}
+                    </span>
+                </div>
+                <p className="section-subtitle">Scroll to move through featured builds.</p>
+                <div className="projects-progress-track">
+                    <span style={{ width: `${progress * 100}%` }} />
+                </div>
+
+                <div className="projects-horizontal-viewport" ref={viewportRef}>
+                    <div className="projects-track" ref={trackRef} style={trackStyle}>
+                        {MY_PROJECTS.map((project, index) => (
+                            <article
+                                className={`projects-slide ${index === currentSlide ? 'is-current' : ''}`}
+                                key={project.id}
+                            >
+                                <div className="slide-meta">
+                                    <span className="slide-role">{project.role}</span>
+                                    <h3>{project.title}</h3>
+                                </div>
                             <ProjectCard project={project} />
-                        </div>
-                    ))}
+                            </article>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

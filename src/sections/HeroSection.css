@@ -8,13 +8,17 @@
     align-items: center;
     text-align: center;
     position: relative;
+    background:
+        radial-gradient(circle at 50% 30%, rgba(0, 243, 255, 0.14), transparent 45%),
+        radial-gradient(circle at 20% 80%, rgba(0, 102, 255, 0.1), transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.08), transparent 45%);
 }
 
 .hero-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 2.5rem;
 }
 
 .hero-text .main-title {
@@ -28,13 +32,81 @@
     font-size: 1.2rem;
     letter-spacing: 0.3rem;
     opacity: 0.7;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+}
+
+.hero-text .value-prop {
+    max-width: 760px;
+    margin: 0 auto 1.3rem;
+    color: rgba(255, 255, 255, 0.86);
+    letter-spacing: 0.04rem;
+    font-size: 1rem;
+}
+
+.hero-signals {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.3rem;
+}
+
+.hero-signals span {
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(8, 18, 36, 0.55);
+    letter-spacing: 0.06rem;
+}
+
+.hero-cta-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.4rem;
+}
+
+.hero-cta {
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-size: 0.83rem;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--glass-border);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-cta.primary {
+    color: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.18), rgba(0, 102, 255, 0.16));
+}
+
+.hero-cta.secondary {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(8, 18, 36, 0.62);
+}
+
+.hero-cta:hover {
+    transform: translateY(-2px);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 22px rgba(0, 243, 255, 0.28);
 }
 
 .hero-text .invitation {
     font-size: 1rem;
     letter-spacing: 0.2rem;
     opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .hero-text .main-title {
+        font-size: 2.7rem;
+        letter-spacing: 0.26rem;
+    }
 }
 
 

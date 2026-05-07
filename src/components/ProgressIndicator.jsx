@@ -43,13 +43,15 @@ const ProgressIndicator = () => {
                     onMouseEnter={() => setHoveredSection(section.id)}
                     onMouseLeave={() => setHoveredSection(null)}
                 >
-                    <div 
+                    <button
+                        type="button"
                         className={`progress-dot ${
                             activeSection === section.id ? 'active' : ''
                         } ${
                             visitedSections.has(section.id) && activeSection !== section.id ? 'visited' : ''
                         }`}
                         onClick={() => scrollToSection(section.id)}
+                        aria-label={`Jump to ${section.label}`}
                         title={section.label}
                     />
                     {hoveredSection === section.id && (

@@ -15,6 +15,11 @@ const ContactSection = () => {
                 <p>
                     I'm always open to discussing new projects, creative ideas, or opportunities to be part of an amazing team. Feel free to reach out.
                 </p>
+                <div className="credibility-signals" aria-label="Professional links">
+                    <a href="https://github.com/mafuyyuuu/jhervis-ai" target="_blank" rel="noopener noreferrer">Portfolio Source</a>
+                    <a href="https://github.com/mafuyyuuu" target="_blank" rel="noopener noreferrer">All Repositories</a>
+                    <a href="/Resume.pdf" download="Jhervin-Jimenez-Resume.pdf">Download Resume</a>
+                </div>
                 <div className="contact-buttons">
                     <a href="mailto:jhervinjimenez03@gmail.com" className="holo-btn primary">
                         <i className="ri-mail-line btn-icon"></i>

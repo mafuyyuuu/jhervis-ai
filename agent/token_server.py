@@ -26,4 +26,4 @@ def get_token():
     return token.to_jwt()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=int(os.getenv("TOKEN_SERVER_PORT", "5005")))

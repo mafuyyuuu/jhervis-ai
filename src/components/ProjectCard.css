@@ -114,6 +114,16 @@
     margin-bottom: 0;
 }
 
+.project-content .project-outcome {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.project-content .project-outcome strong {
+    color: var(--neon-cyan);
+}
+
 
 /* BACK FACE STYLES */
 .card-back {
@@ -187,6 +197,11 @@
 
 .project-card-scene:hover .click-hint {
     opacity: 1;
+}
+
+.project-card-scene:focus-visible .project-card-face {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.4), 0 10px 35px rgba(0, 243, 255, 0.2);
 }
 
 /* Project Tip Tooltip */

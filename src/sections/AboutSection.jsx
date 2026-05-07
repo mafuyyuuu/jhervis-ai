@@ -31,7 +31,7 @@ const AboutSection = () => {
                     <div className="col-md-10">
                         <div className="profile-summary">
                             <p>
-                                I am Jhervin Jimenez, a 22-year-old creator and aspiring AI engineer currently studying BSIT at Pamantasan ng Lungsod ng Pasig. With a passion for technology and creativity, I thrive on building innovative solutions and learning new things. My journey is driven by a blend of academic excellence, creative pursuits, and a strong desire for self-growth.
+                                I am Jhervin Jimenez, a 23-year-old creator and aspiring AI engineer currently studying BSIT at Pamantasan ng Lungsod ng Pasig. With a passion for technology and creativity, I thrive on building innovative solutions and learning new things. My journey is driven by a blend of academic excellence, creative pursuits, and a strong desire for self-growth.
                             </p>
                         </div>
                     </div>

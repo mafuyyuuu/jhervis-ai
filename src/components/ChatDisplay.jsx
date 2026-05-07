@@ -14,7 +14,7 @@ const ChatDisplay = ({ userMessage }) => {
         if (userMessage && userMessage.text) {
             setMessages(prev => [...prev, { sender: 'user', text: userMessage.text }]);
         }
-    }, [userMessage?.id]);
+    }, [userMessage]);
 
     useEffect(() => {
         if (chatContainerRef.current) {
