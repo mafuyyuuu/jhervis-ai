@@ -300,7 +300,7 @@ const PortfolioPage = () => {
 // --- MAIN APP ---
 export default function App() {
     const [token, setToken] = useState("");
-    const tokenEndpoint = import.meta.env.VITE_TOKEN_SERVER_URL || "http://localhost:5005/getToken";
+    const tokenEndpoint = import.meta.env.VITE_TOKEN_SERVER_URL || "/api/getToken";
 
     useEffect(() => {
         (async () => {
