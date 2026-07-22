@@ -54,7 +54,7 @@ const PortfolioPage = () => {
         lastScrollTime.current = Date.now();
     }, []);
 
-    // Sound effects on agent state change
+    // Sound effects on api state change
     useEffect(() => {
         if (agentState !== lastAgentState.current) {
             if (agentState === 'speaking' && lastAgentState.current !== 'speaking') {

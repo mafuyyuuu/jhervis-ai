@@ -22,11 +22,11 @@ __pycache__/
 *.pyd
 .venv/
 venv/
-agent/.venv/
-agent/venv/
-agent/.env
-agent/.env.*
-!agent/.env.example
+api/.venv/
+api/venv/
+api/.env
+api/.env.*
+!api/.env.example
 
 # Editor directories and files
 .vscode/*

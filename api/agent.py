@@ -2,7 +2,7 @@ import sys
 
 if sys.version_info < (3, 10):
     raise RuntimeError(
-        "JHERVIS agent requires Python 3.10+ (recommended 3.11+). "
+        "JHERVIS api requires Python 3.10+ (recommended 3.11+). "
         "Create the venv with a newer Python binary and reinstall requirements."
     )
 

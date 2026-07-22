@@ -24,7 +24,7 @@ const MY_PROJECTS = [
         type: "AI / Python / React", 
         description: "AI-powered digital companion with real-time voice interaction and holographic interface.",
         image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=250&fit=crop",
-        longDescription: "This is the very portfolio you are interacting with now. It's an exploration into creating an AI-driven user experience using real-time voice and chat, powered by Google Gemini and LiveKit's agent framework.",
+        longDescription: "This is the very portfolio you are interacting with now. It's an exploration into creating an AI-driven user experience using real-time voice and chat, powered by Google Gemini and LiveKit's api framework.",
         technologies: ["React", "Python", "LiveKit", "Google Gemini", "Vite"],
         role: "AI Engineer & Frontend Developer",
         outcome: "Delivered a realtime voice + chat portfolio assistant integrated with LiveKit.",

@@ -23,7 +23,7 @@ npm install
 ## 2) Set up Python environment
 
 ```bash
-cd /Users/jhervin/WebstormProjects/jhervis-ai/agent
+cd /Users/jhervin/WebstormProjects/jhervis-ai/api
 python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -40,7 +40,7 @@ brew install python@3.11
 Create `agent/.env` based on `agent/.env.example`:
 
 ```bash
-cd /Users/jhervin/WebstormProjects/jhervis-ai/agent
+cd /Users/jhervin/WebstormProjects/jhervis-ai/api
 cp .env.example .env
 ```
 
@@ -78,23 +78,23 @@ npm run dev
 Terminal B (token server):
 
 ```bash
-cd /Users/jhervin/WebstormProjects/jhervis-ai/agent
+cd /Users/jhervin/WebstormProjects/jhervis-ai/api
 source .venv/bin/activate
-python token_server.py
+python index.py
 ```
 
 Terminal C (agent worker):
 
 ```bash
-cd /Users/jhervin/WebstormProjects/jhervis-ai/agent
+cd /Users/jhervin/WebstormProjects/jhervis-ai/api
 source .venv/bin/activate
-python agent.py dev
+python api.py dev
 ```
 
 If `python agent.py dev` is not available in your installed `livekit-agents` version, try:
 
 ```bash
-python agent.py start
+python api.py start
 ```
 
 ## Useful scripts
