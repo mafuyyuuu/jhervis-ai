@@ -80,7 +80,7 @@ Terminal B (token server):
 ```bash
 cd /Users/jhervin/WebstormProjects/jhervis-ai/api
 source .venv/bin/activate
-python index.py
+python getToken.py
 ```
 
 Terminal C (agent worker):

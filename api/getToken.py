@@ -9,8 +9,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/api/getToken")
-@app.route("/getToken")
+@app.route("/api/getToken", methods=["GET", "POST"])
 def get_token():
     token = api.AccessToken(
         os.getenv("LIVEKIT_API_KEY"),
