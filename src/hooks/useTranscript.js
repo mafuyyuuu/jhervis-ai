@@ -44,7 +44,16 @@ export function useTranscript() {
             setSegments((prev) => {
                 const index = prev.findIndex((segment) => segment.id === id);
                 if (index === -1) {
-                    return [...prev, { id, role, text, final, streamAt, at: streamAt }];
+                    /* Turns are sequential, so anything still open when a new
+                       segment starts is never going to be written to again.
+                       Close it out — otherwise an interrupted turn (asking a
+                       question mid-greeting calls session.interrupt, and the
+                       cut-off segment never gets its final flush) keeps a
+                       blinking caret forever. */
+                    const closed = prev.map((segment) =>
+                        segment.final ? segment : { ...segment, final: true },
+                    );
+                    return [...closed, { id, role, text, final, streamAt, at: streamAt }];
                 }
 
                 const existing = prev[index];

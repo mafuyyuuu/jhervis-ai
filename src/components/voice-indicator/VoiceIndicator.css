@@ -1,0 +1,72 @@
+/* Editorial, not sci-fi: flat bars, hairline weight, no glow and no ambient
+   animation. The only motion here comes from JHERVIS's voice. */
+.voice-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.voice-bars {
+    display: flex;
+    align-items: center;
+    gap: var(--bar-gap);
+    height: var(--bar-height);
+}
+
+.voice-bar {
+    display: block;
+    width: var(--bar-width);
+    height: 100%;
+    border-radius: 1px;
+    background: var(--ink-subtle);
+    /* Scaled from the centre so the row reads as a waveform rather than a bar
+       chart growing off a baseline. */
+    transform-origin: center;
+    transform: scaleY(0.18);
+    transition: transform 90ms linear, background-color 260ms ease;
+}
+
+.voice-indicator.is-speaking .voice-bar {
+    background: var(--accent);
+}
+
+.voice-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
+}
+
+.voice-indicator.is-speaking .voice-label {
+    color: var(--ink-muted);
+}
+
+.size-lg {
+    --bar-width: 3px;
+    --bar-gap: 6px;
+    --bar-height: 60px;
+}
+
+.size-sm {
+    --bar-width: 2px;
+    --bar-gap: 3px;
+    --bar-height: 16px;
+    gap: 0;
+}
+
+@media (max-width: 768px) {
+    .size-lg {
+        --bar-height: 44px;
+        --bar-gap: 5px;
+    }
+}
+
+/* The bars encode agent state that is also written out in text nearby, so
+   freezing them costs no information. */
+@media (prefers-reduced-motion: reduce) {
+    .voice-bar {
+        transition: none;
+        transform: scaleY(0.35) !important;
+    }
+}

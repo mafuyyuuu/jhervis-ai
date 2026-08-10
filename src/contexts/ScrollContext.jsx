@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 
 const ScrollContext = createContext(null);
 
@@ -7,17 +7,12 @@ export const useScroll = () => {
     return useContext(ScrollContext);
 };
 
+/* `hoveredProjectId` used to live here too, but its only reader was the arc
+   reactor's "gaze" effect — the orb speeding up when you hovered a project
+   card. With the reactor gone it was write-only state, so it went with it. */
 export const ScrollProvider = ({ children, value }) => {
-    const [hoveredProjectId, setHoveredProjectId] = useState(null);
-    
-    const providerValue = {
-        ...value,
-        hoveredProjectId,
-        setHoveredProjectId,
-    };
-
     return (
-        <ScrollContext.Provider value={providerValue}>
+        <ScrollContext.Provider value={value}>
             {children}
         </ScrollContext.Provider>
     );

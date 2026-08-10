@@ -1,7 +1,3 @@
-.neural-core-placeholder {
-    height: 300px; /* Approximate height of the neural core + gap */
-}
-
 #hero {
     display: flex;
     justify-content: center;
@@ -15,7 +11,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2.5rem;
+}
+
+.hero-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero-text .voice-indicator {
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 2rem;
 }
 
 .hero-text .main-title {
@@ -63,53 +70,29 @@
     letter-spacing: 0.06rem;
 }
 
+/* Demoted to plain text links: asking JHERVIS is the primary action on this
+   screen now, and two filled buttons next to the ask bar competed with it. */
 .hero-cta-group {
     display: flex;
-    gap: 12px;
+    gap: 20px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 1.4rem;
 }
 
 .hero-cta {
     text-decoration: none;
-    border-radius: var(--radius);
-    padding: 12px 22px;
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border: 1px solid var(--line-strong);
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-.hero-cta.primary {
-    color: var(--surface);
-    border-color: var(--ink);
-    background: var(--ink);
-}
-
-.hero-cta.primary:hover {
-    background: transparent;
-    color: var(--ink);
-}
-
-.hero-cta.secondary {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
     color: var(--ink-muted);
-    background: transparent;
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 2px;
+    transition: color 0.2s ease, border-color 0.2s ease;
 }
 
-.hero-cta.secondary:hover {
-    border-color: var(--ink);
+.hero-cta:hover {
     color: var(--ink);
-}
-
-.hero-text .invitation {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.2rem;
-    text-transform: uppercase;
-    color: var(--ink-subtle);
+    border-color: var(--accent);
 }
 
 @media (max-width: 768px) {
@@ -118,14 +101,8 @@
         letter-spacing: 0.02em;
     }
 
-    /* Holds the in-flow mobile orb (NeuralCore `inline` variant) rather than
-       reserving blank space for a floating one. */
-    .neural-core-placeholder {
-        height: 160px;
-    }
-
-    .hero-content {
-        gap: 1.5rem;
+    .hero-text .voice-indicator {
+        margin-bottom: 1.4rem;
     }
 }
 

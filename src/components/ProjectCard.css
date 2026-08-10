@@ -34,7 +34,41 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: top center;
     filter: grayscale(0.6) brightness(0.85);
+}
+
+.project-card:hover .project-image {
+    filter: grayscale(0.15) brightness(1);
+}
+
+/* Stand-in for projects with no real screenshot yet: a numbered plate, in the
+   same display face as the section headings. Reads as a deliberate editorial
+   choice rather than a missing asset — which a stock photo never does. */
+.project-cover {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        linear-gradient(160deg, rgba(245, 245, 245, 0.05), transparent 60%),
+        var(--surface);
+    border-bottom: 1px solid var(--line);
+}
+
+.project-cover-index {
+    font-family: var(--font-display);
+    font-size: 4.5rem;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    opacity: 0.13;
+    transition: opacity 0.3s ease;
+}
+
+.project-card:hover .project-cover-index {
+    opacity: 0.26;
 }
 
 /* Hover-to-play preview clip, layered over the static image so there's no
@@ -103,13 +137,27 @@
 }
 
 .click-hint {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-top: 18px;
     font-family: var(--font-mono);
     font-size: 0.75rem;
     letter-spacing: 0.5px;
     color: var(--ink-subtle);
     transition: color 0.2s ease;
+}
+
+/* Flags the cards a reviewer can actually go and click through to. */
+.click-hint-live {
+    font-style: normal;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-chip);
+    padding: 2px 8px;
 }
 
 .project-card:hover .click-hint {

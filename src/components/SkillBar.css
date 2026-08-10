@@ -1,69 +1,51 @@
-.skill-bar-wrapper {
-    position: relative;
-    margin-bottom: 1.5rem;
-    padding: 5px; /* Add some padding to make hover area bigger */
+/* ========== SKILL ENTRY ========== */
+.skill-entry {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
 }
 
 .skill-header {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
 }
 
 .skill-name {
     font-size: 1rem;
-    font-weight: 500;
     color: var(--ink);
-    letter-spacing: 1px;
 }
 
 .skill-note {
-    font-size: 0.8rem;
-    color: var(--ink-subtle);
-    margin-left: 5px;
-}
-
-.skill-percent {
     font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--ink-muted);
-}
-
-.skill-bar-bg {
-    height: 6px;
-    background: var(--panel);
-    border-radius: var(--radius);
-    overflow: hidden;
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
     border: 1px solid var(--line);
+    border-radius: var(--radius-chip);
+    padding: 2px 8px;
 }
 
-.skill-bar-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: var(--radius);
-    transition: width 1.5s ease-out;
+.skill-evidence {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+    text-align: left;
 }
 
-.related-projects-tooltip {
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    transform: translateY(-10px);
-    background: var(--panel);
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius);
-    padding: 10px 15px;
-    font-size: 0.9rem;
-    color: var(--ink);
-    white-space: nowrap;
-    z-index: 10;
-    opacity: 0;
-    animation: tooltip-fade-in 0.3s ease forwards;
+.skill-evidence-label {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
 }
 
-@keyframes tooltip-fade-in {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.skill-evidence-empty {
+    color: var(--ink-subtle);
 }

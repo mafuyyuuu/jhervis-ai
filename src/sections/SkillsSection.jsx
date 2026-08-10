@@ -3,22 +3,29 @@ import SkillBar from '../components/SkillBar';
 import { useScroll } from '../contexts/ScrollContext';
 import './SkillsSection.css';
 
+/* Evidence, not self-assigned percentages. `usedIn` should name projects that
+   appear in the Projects section above, so a reader can click through and check
+   the claim — that is the whole point of listing it this way. */
 const SKILLS_DATA = {
     "Programming Languages": [
-        { id: 1, name: "Java", level: 75, relatedProjects: ["Library System"] },
-        { id: 2, name: "Python", level: 80, relatedProjects: ["J.H.E.R.V.I.S.", "Face Recognition"] },
-        { id: 3, name: "JavaScript", level: 90, relatedProjects: ["Payroll System", "J.H.E.R.V.I.S."] },
-        { id: 4, name: "C++", level: 60, relatedProjects: [] },
+        { id: 1, name: "JavaScript", usedIn: ["Project TRACE", "Alumni Employability Tracer", "J.H.E.R.V.I.S."] },
+        { id: 2, name: "Python", usedIn: ["J.H.E.R.V.I.S.", "Alumni Employability Tracer", "Project TRACE", "Data Analysis Case Study"] },
+        { id: 3, name: "Java", usedIn: ["Library System", "Stranger"] },
+        { id: 4, name: "Kotlin", usedIn: ["SafePasig.AI"] },
+        { id: 5, name: "C++", usedIn: [] },
     ],
     "Web Development": [
-        { id: 5, name: "React", level: 85, relatedProjects: ["Payroll System", "J.H.E.R.V.I.S."] },
-        { id: 6, name: "Node.js", level: 70, relatedProjects: ["Payroll System"] },
-        { id: 7, name: "FastAPI", level: 50, note: "Beginner", relatedProjects: ["Face Recognition"] },
+        { id: 6, name: "React", usedIn: ["Payroll & IPCR Module", "J.H.E.R.V.I.S."] },
+        { id: 7, name: "Node.js", usedIn: ["Payroll & IPCR Module"] },
+        { id: 8, name: "FastAPI", note: "Learning", usedIn: [] },
     ],
     "Tools & Tech": [
-        { id: 8, name: "MySQL", level: 70, relatedProjects: ["Library System"] },
-        { id: 9, name: "Git & GitHub", level: 65, note: "Learning", relatedProjects: ["All Projects"] },
-        { id: 10, name: "JavaFX", level: 75, relatedProjects: ["Desktop Applications"] },
+        { id: 9, name: "n8n", usedIn: ["Project TRACE"] },
+        { id: 10, name: "LiveKit & Google Gemini", usedIn: ["J.H.E.R.V.I.S."] },
+        { id: 11, name: "Firebase & Cloud Firestore", usedIn: ["SafePasig.AI"] },
+        { id: 12, name: "MySQL", usedIn: ["Library System", "Payroll & IPCR Module"] },
+        { id: 13, name: "JavaFX", usedIn: ["Library System"] },
+        { id: 14, name: "Git & GitHub", note: "Learning", usedIn: ["Every project here"] },
     ]
 };
 

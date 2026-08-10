@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './InteractiveCorner.css';
 import ChatInput from "./ChatInput";
 import MicButton from "./MicButton";
-import NeuralCore from "./neural-core/NeuralCore";
+import VoiceIndicator from "./voice-indicator/VoiceIndicator";
 
 const InteractiveCorner = ({ onQuerySubmit, children }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -35,7 +35,7 @@ const InteractiveCorner = ({ onQuerySubmit, children }) => {
                 {/* Header */}
                 <div className="chat-header">
                     <div className="chat-header-title">
-                        <NeuralCore compact />
+                        <VoiceIndicator size="sm" />
                         JHERVIS ASSISTANT
                     </div>
                     <button

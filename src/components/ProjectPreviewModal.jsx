@@ -1,16 +1,39 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import './ProjectPreviewModal.css';
 
-// Full project details, opened when a card is clicked (any device — there's
-// no more flip-to-reveal-back-face; this modal is where the details live).
+// Full project details, opened when a card is clicked.
 const ProjectPreviewModal = ({ project, onClose }) => {
+    const dialogRef = useRef(null);
+    const closeRef = useRef(null);
+
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') onClose();
         };
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+
+        /* Lock the page behind the modal. Without this the portfolio scrolled
+           under the backdrop on wheel/trackpad, which is what made the overlay
+           feel detached from the page. The scrollbar is compensated so the
+           layout doesn't shift sideways as it disappears. */
+        const { body } = document;
+        const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+        const prevOverflow = body.style.overflow;
+        const prevPadding = body.style.paddingRight;
+        body.style.overflow = 'hidden';
+        if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`;
+
+        // Move focus in so Escape/Tab act on the dialog, not the page behind it.
+        const previouslyFocused = document.activeElement;
+        closeRef.current?.focus();
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            body.style.overflow = prevOverflow;
+            body.style.paddingRight = prevPadding;
+            if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
+        };
     }, [onClose]);
 
     if (!project) return null;
@@ -30,48 +53,101 @@ const ProjectPreviewModal = ({ project, onClose }) => {
         >
             <div
                 className="preview-modal-content"
+                ref={dialogRef}
                 role="dialog"
                 aria-modal="true"
-                aria-label={`${project.title} details`}
+                aria-labelledby="preview-modal-title"
                 onClick={(e) => e.stopPropagation()}
             >
-                <button className="preview-modal-close" onClick={onClose} aria-label="Close">
-                    <i className="ri-close-line"></i>
-                </button>
-
-                {project.previewVideo ? (
-                    <video
-                        src={project.previewVideo}
-                        className="preview-modal-media"
-                        controls
-                        autoPlay
-                        playsInline
-                    />
-                ) : (
-                    <img src={project.image} alt={project.title} className="preview-modal-media" />
-                )}
-
-                <div className="preview-modal-body">
+                {/* Sticky bar so Close stays reachable while reading a long
+                    case study. It used to be a floating circle pinned to
+                    top:-14px/right:-14px — hanging off the modal's corner,
+                    clipped on narrow screens, and belonging to neither the
+                    modal nor the page. */}
+                <header className="preview-modal-bar">
                     <span className="preview-modal-type">{project.type}</span>
-                    <h3 className="preview-modal-title">{project.title}</h3>
-                    <p className="preview-modal-desc">{project.longDescription}</p>
-                    {project.outcome && (
-                        <p className="preview-modal-outcome"><strong>Outcome:</strong> {project.outcome}</p>
+                    <button
+                        className="preview-modal-close"
+                        onClick={onClose}
+                        aria-label="Close project details"
+                        ref={closeRef}
+                    >
+                        <i className="ri-close-line" aria-hidden="true"></i>
+                    </button>
+                </header>
+
+                <div className="preview-modal-scroll">
+                    {project.image ? (
+                        <img
+                            src={project.image}
+                            alt={`${project.title} screenshot`}
+                            className="preview-modal-media"
+                        />
+                    ) : (
+                        <div className="preview-modal-cover" aria-hidden="true">
+                            <span className="project-cover-index">
+                                {String(project.id).padStart(2, '0')}
+                            </span>
+                        </div>
                     )}
 
-                    <div className="preview-modal-tags">
-                        {project.technologies.map((tech) => (
-                            <span key={tech} className="tech-tag">{tech}</span>
-                        ))}
-                    </div>
+                    <div className="preview-modal-body">
+                        <h3 className="preview-modal-title" id="preview-modal-title">
+                            {project.title}
+                        </h3>
+                        <p className="preview-modal-desc">{project.longDescription}</p>
 
-                    <div className="preview-modal-links">
-                        {project.liveDemoUrl && (
-                            <a href={project.liveDemoUrl} className="card-link" target="_blank" rel="noopener noreferrer">Live Demo</a>
-                        )}
-                        <a href={project.sourceCodeUrl} className="card-link" target="_blank" rel="noopener noreferrer">Source Code</a>
+                        <dl className="preview-modal-facts">
+                            {project.role && (
+                                <div className="preview-modal-fact">
+                                    <dt>Role</dt>
+                                    <dd>{project.role}</dd>
+                                </div>
+                            )}
+                            {project.outcome && (
+                                <div className="preview-modal-fact">
+                                    <dt>Outcome</dt>
+                                    <dd>{project.outcome}</dd>
+                                </div>
+                            )}
+                            <div className="preview-modal-fact">
+                                <dt>Built with</dt>
+                                <dd>
+                                    <div className="preview-modal-tags">
+                                        {project.technologies.map((tech) => (
+                                            <span key={tech} className="tech-tag">{tech}</span>
+                                        ))}
+                                    </div>
+                                </dd>
+                            </div>
+                        </dl>
                     </div>
                 </div>
+
+                <footer className="preview-modal-links">
+                    {/* The deployed site is the preview — a link a reviewer can
+                        actually click and poke at, rather than a muted clip. */}
+                    {project.liveDemoUrl && (
+                        <a
+                            href={project.liveDemoUrl}
+                            className="card-link is-primary"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i className="ri-external-link-line" aria-hidden="true"></i>
+                            Open live demo
+                        </a>
+                    )}
+                    <a
+                        href={project.sourceCodeUrl}
+                        className="card-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <i className="ri-github-fill" aria-hidden="true"></i>
+                        Source code
+                    </a>
+                </footer>
             </div>
         </div>,
         document.body

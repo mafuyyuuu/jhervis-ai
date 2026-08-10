@@ -1,0 +1,112 @@
+/* ========== HERO ASK ========== */
+.hero-ask {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.hero-ask-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
+    text-align: left;
+}
+
+.hero-ask-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 6px 6px 6px 16px;
+    transition: border-color 0.2s ease;
+}
+
+.hero-ask-field:focus-within {
+    border-color: var(--accent);
+}
+
+/* A real <input>, unlike the dock's terminal-styled one which parks an input
+   off-screen and paints a fake caret — that costs text selection, caret
+   placement and mobile IME for the sake of a retro look. */
+.hero-ask-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    padding: 10px 0;
+    outline: none;
+}
+
+.hero-ask-input::placeholder {
+    color: var(--ink-subtle);
+}
+
+.hero-ask-input:disabled {
+    cursor: not-allowed;
+}
+
+.hero-ask-submit {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--surface);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.hero-ask-submit:hover:not(:disabled) {
+    background: var(--accent);
+}
+
+.hero-ask-submit:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.hero-ask-starters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.hero-ask-starter {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-chip);
+    background: transparent;
+    color: var(--ink-muted);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.hero-ask-starter:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+}
+
+@media (max-width: 768px) {
+    .hero-ask-starter {
+        font-size: 0.78rem;
+        padding: 6px 12px;
+    }
+}

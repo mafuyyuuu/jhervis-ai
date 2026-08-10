@@ -54,6 +54,12 @@ async def entrypoint(ctx: agents.JobContext):
         if identity in greeted_identities:
             return
         greeted_identities.add(identity)
+        # The greeting already does everything the "hero" narration would do —
+        # say hello, introduce JHERVIS, invite the visitor to look around. The
+        # scroll-spy reports "hero" as the active section on load, so without
+        # this the visitor got introduced to JHERVIS twice in a row. Mark hero
+        # as already narrated for this visitor.
+        narrated_sections_by_identity.setdefault(identity, set()).add("hero")
         print(f"Sending welcome greeting to: {identity}")
         await speak_reply(instructions=SESSION_INSTRUCTIONS)
 
@@ -94,8 +100,12 @@ async def entrypoint(ctx: agents.JobContext):
                         await speak_reply(instructions=prompt)
 
                 elif event_type == "welcome_request":
+                    # Routed through send_welcome so it shares the
+                    # greeted_identities guard. Calling generate_reply directly
+                    # here meant a visitor whose participant_connected had
+                    # already fired got greeted a second time.
                     print(f"Welcome requested by {sender_identity}")
-                    await speak_reply(instructions=SESSION_INSTRUCTIONS)
+                    await send_welcome(sender_identity)
                          
                 elif event_type == "user_query":
                     query = event.get("query")

@@ -17,19 +17,6 @@
     --font-display: 'Anton', -apple-system, sans-serif;
     --font-body: 'Inter', -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-
-    /* Legacy aliases — the rest of the codebase is being swept from these
-       names to the tokens above; remove this block once nothing references
-       var(--neon-*) / var(--glass-*) / var(--dark-bg) / var(--text-glow) anymore. */
-    --neon-cyan: var(--accent);
-    --neon-green: var(--accent-listening);
-    --neon-orange: var(--accent-thinking);
-    --neon-pink: var(--accent);
-    --neon-blue: var(--accent);
-    --dark-bg: var(--surface);
-    --glass-bg: var(--panel);
-    --glass-border: var(--line);
-    --text-glow: none;
 }
 
 * {
@@ -48,8 +35,9 @@ body {
     overflow-x: hidden;
 }
 
-/* Subtle film grain — gives the flat editorial surfaces some tactile depth
-   without the grid-overlay/neon-particle "cyberpunk HUD" look. */
+/* Subtle film grain — the one ambient texture left. It replaced the drifting
+   particle field, which spent the agent's live audioLevel on 50 dots at 5-20%
+   opacity that nobody could see. */
 body::before {
     content: '';
     position: fixed;

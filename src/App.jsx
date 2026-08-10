@@ -5,16 +5,11 @@ import "@livekit/components-styles";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './components/ThemedScrollbar.css';
-import './components/ParticleBackground.css';
-
-import NeuralCore from "./components/neural-core/NeuralCore";
 
 import { useScrollSpy } from "./hooks/useScrollSpy";
 import { useLiveKitToken } from "./hooks/useLiveKitToken";
 
 import { ScrollProvider } from './contexts/ScrollContext';
-
-import ParticleBackground from "./components/ParticleBackground";
 
 import InteractiveCorner from "./components/InteractiveCorner";
 import ChatDisplay from "./components/ChatDisplay";
@@ -36,10 +31,12 @@ const PortfolioPage = ({ aiStatus, onRetryAi }) => {
     const sectionIds = useMemo(() => ["hero", "about", "projects", "skills", "contact"], []);
     const activeSection = useScrollSpy(sectionIds, { threshold: 0.5 });
     const [isScrolled, setIsScrolled] = useState(false);
-    const [scrollSpeed, setScrollSpeed] = useState(0);
     const [showIdlePrompt, setShowIdlePrompt] = useState(false);
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [lastUserMessage, setLastUserMessage] = useState(null);
+    // Once a conversation exists the dock stays available regardless of scroll,
+    // so an answer to a question asked from the hero has somewhere to land.
+    const [hasConversation, setHasConversation] = useState(false);
     // null = gate still up. 'voice' = wants to hear JHERVIS. 'silent' = chose to
     // just read the portfolio; the agent still answers, in text only.
     const [entryMode, setEntryMode] = useState(null);
@@ -47,8 +44,6 @@ const PortfolioPage = ({ aiStatus, onRetryAi }) => {
     const [showMicHint, setShowMicHint] = useState(true);
     const hasEnteredExperience = entryMode !== null;
     const aiUnavailable = aiStatus === 'error';
-    const lastScrollY = useRef(0);
-    const lastScrollTime = useRef(0);
     const lastNarratedSection = useRef(null);
     const lastAgentState = useRef(null);
     const idleTimerRef = useRef(null);
@@ -61,12 +56,7 @@ const PortfolioPage = ({ aiStatus, onRetryAi }) => {
     const connectionState = useConnectionState(room);
     const isRoomConnected = connectionState === ConnectionState.Connected;
     
-    // Initialize time ref on mount
-    useEffect(() => {
-        lastScrollTime.current = Date.now();
-    }, []);
-
-    // Sound effects on api state change
+    // Sound effects on agent state change
     useEffect(() => {
         if (agentState !== lastAgentState.current) {
             if (agentState === 'speaking' && lastAgentState.current !== 'speaking') {
@@ -105,24 +95,7 @@ const PortfolioPage = ({ aiStatus, onRetryAi }) => {
 
     useEffect(() => {
         const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-            const currentTime = Date.now();
-            
-            const distance = Math.abs(currentScrollY - lastScrollY.current);
-            const time = currentTime - lastScrollTime.current;
-
-            if (time > 0) {
-                setScrollSpeed(distance / time);
-            }
-
-            lastScrollY.current = currentScrollY;
-            lastScrollTime.current = currentTime;
-
-            if (currentScrollY > 100) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-            }
+            setIsScrolled(window.scrollY > 100);
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
@@ -163,7 +136,8 @@ const PortfolioPage = ({ aiStatus, onRetryAi }) => {
         // Update last user message with unique id to trigger re-render
         messageIdRef.current += 1;
         setLastUserMessage({ id: messageIdRef.current, text: query });
-        
+        setHasConversation(true);
+
         if (!isRoomConnected) {
             console.warn('Room not connected, cannot send query');
             return;
@@ -249,11 +223,9 @@ const PortfolioPage = ({ aiStatus, onRetryAi }) => {
 
     return (
         <ScrollProvider value={{ activeSection }}>
-            <NeuralCore isFixed={isScrolled} scrollSpeed={scrollSpeed} />
             <ProgressIndicator />
 
             <main className="container-fluid">
-                <ParticleBackground />
                 <div className={`connection-pill ${connectionStateClass}`} role="status" aria-live="polite">
                     <span>{connectionText}</span>
                     {aiUnavailable && (
@@ -300,8 +272,10 @@ const PortfolioPage = ({ aiStatus, onRetryAi }) => {
                     onAsk={handleIdleAsk}
                 />
 
-                {/* Interactive Corner - only visible when scrolled */}
-                <div className={`corner-container ${!isScrolled ? 'corner-hidden' : ''}`}>
+                {/* Tucked away on the hero, where HeroAsk is the way in — but
+                    revealed the moment there's a conversation to read, so a
+                    question asked from the hero has a visible answer. */}
+                <div className={`corner-container ${!isScrolled && !hasConversation ? 'corner-hidden' : ''}`}>
                     <InteractiveCorner onQuerySubmit={handleQuerySubmit}>
                         <ChatDisplay userMessage={lastUserMessage} aiStatus={aiStatus} />
                         <QuickActions section={activeSection} onAsk={handleQuerySubmit} />
@@ -341,7 +315,7 @@ const PortfolioPage = ({ aiStatus, onRetryAi }) => {
                 )}
 
                 <Suspense fallback={null}>
-                    <HeroSection />
+                    <HeroSection onAsk={handleQuerySubmit} aiStatus={aiStatus} />
                     <AboutSection />
                     <ProjectsSection />
                     <SkillsSection />
