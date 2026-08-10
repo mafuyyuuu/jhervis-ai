@@ -3,7 +3,7 @@ import { useVoiceAssistant } from "@livekit/components-react";
 import { useScroll } from '../../contexts/ScrollContext';
 import './NeuralCore.css';
 
-const NeuralCore = ({ isFixed, scrollSpeed = 0 }) => {
+const NeuralCore = ({ isFixed, scrollSpeed = 0, compact = false, inline = false }) => {
     const { state: agentState } = useVoiceAssistant();
     const { hoveredProjectId, activeSection } = useScroll();
     const isGazing = hoveredProjectId !== null;
@@ -63,25 +63,52 @@ const NeuralCore = ({ isFixed, scrollSpeed = 0 }) => {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
+    const reactor = (
+        <div className={`reactor-container ${isSpeaking ? 'reactor-speaking' : ''} ${isListening ? 'reactor-listening' : ''} ${isGazing ? 'is-gazing' : ''}`}>
+            <div className="reactor-glow"></div>
+            <div className="reactor-ring ring-1" style={{ animationDuration: `${duration1}s` }}></div>
+            <div className="reactor-ring ring-2" style={{ animationDuration: `${duration2}s` }}></div>
+            <div className="reactor-ring ring-3">
+                <div
+                    className="core-dot"
+                    style={compact ? undefined : {
+                        transform: `translate(${mousePos.x}px, ${mousePos.y}px)`,
+                        transition: 'transform 0.1s ease-out'
+                    }}
+                ></div>
+            </div>
+        </div>
+    );
+
+    // Compact: reactor only, laid out inline (no fixed positioning, no status
+    // pill). Used inside the chat panel header, where the panel itself already
+    // labels what it is.
+    if (compact) {
+        return (
+            <div className={`neural-core-compact ${getMoodClass()}`} title={statusText}>
+                {reactor}
+            </div>
+        );
+    }
+
+    // Inline: sits in normal document flow inside the hero. Used on mobile,
+    // where the viewport-fixed variant below can't reliably stay clear of the
+    // hero title (fixed positioning doesn't track flowed content, so the two
+    // only line up at some screen sizes).
+    if (inline) {
+        return (
+            <div className={`neural-core-inline ${getMoodClass()}`}>
+                {reactor}
+            </div>
+        );
+    }
+
     return (
-        <div 
+        <div
             ref={coreRef}
             className={`neural-core-wrapper ${isFixed ? 'fixed' : ''} ${getMoodClass()}`}
         >
-            <div className={`reactor-container ${isSpeaking ? 'reactor-speaking' : ''} ${isListening ? 'reactor-listening' : ''} ${isGazing ? 'is-gazing' : ''}`}>
-                <div className="reactor-glow"></div>
-                <div className="reactor-ring ring-1" style={{ animationDuration: `${duration1}s` }}></div>
-                <div className="reactor-ring ring-2" style={{ animationDuration: `${duration2}s` }}></div>
-                <div className="reactor-ring ring-3">
-                    <div 
-                        className="core-dot"
-                        style={{ 
-                            transform: `translate(${mousePos.x}px, ${mousePos.y}px)`,
-                            transition: 'transform 0.1s ease-out'
-                        }}
-                    ></div>
-                </div>
-            </div>
+            {reactor}
             <div className={`status-indicator ${statusClass}`}>
                 <span className="status-dot"></span>
                 <span className="status-text">{statusText}</span>

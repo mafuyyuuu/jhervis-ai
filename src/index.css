@@ -1,6 +1,5 @@
 /* client/src/index.css */
 :root {
-    font-family: Inter, Poppins, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
 
@@ -11,6 +10,8 @@
     padding: 0;
 }
 
+/* font-family and background-color for body are owned by App.css
+   (var(--font-body) / var(--surface)) — not duplicated here. */
 body {
     margin: 0;
     padding: 0;
@@ -18,7 +19,6 @@ body {
     height: 100%;
     min-width: 100vw;
     min-height: 100vh;
-    background-color: #050505; /* Match your theme */
 }
 
 #root {

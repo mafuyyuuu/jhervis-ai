@@ -1,16 +1,19 @@
 import React from 'react';
 import ShinyText from '../components/shiny-text/ShinyText';
-import ScanEffect from '../components/ScanEffect';
-import { useScroll } from '../contexts/ScrollContext';
+import NeuralCore from '../components/neural-core/NeuralCore';
 import './HeroSection.css';
 
 const HeroSection = () => {
-    const { activeSection } = useScroll();
     return (
         <section id="hero">
-            <ScanEffect active={activeSection === 'hero'} />
             <div className="hero-content">
-                <div className="neural-core-placeholder" />
+                {/* On desktop this is just a spacer that the viewport-fixed orb
+                    floats over. On mobile that fixed orb is hidden and this
+                    renders a real in-flow orb instead, so it can never land on
+                    top of the title. */}
+                <div className="neural-core-placeholder">
+                    <NeuralCore inline />
+                </div>
                 <div className="hero-text">
                     <h1 className="main-title">
                         <ShinyText text="J.H.E.R.V.I.S." />

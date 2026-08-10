@@ -41,7 +41,14 @@ async def entrypoint(ctx: agents.JobContext):
     room_disconnected = asyncio.Event()
 
     async def speak_reply(**kwargs):
-        await session.generate_reply(input_modality="audio", **kwargs)
+        try:
+            await session.generate_reply(input_modality="audio", **kwargs)
+        except Exception as e:
+            # Most likely cause here is the Gemini Live API free-tier quota/rate
+            # limit being hit (this model's limits are separate from, and often
+            # tighter than, the general Gemini free tier). Log clearly so
+            # `lk agent logs` shows the real cause instead of a silent no-op.
+            print(f"generate_reply failed (possible Gemini quota/rate limit): {e}")
 
     async def send_welcome(identity: str):
         if identity in greeted_identities:
@@ -102,11 +109,15 @@ async def entrypoint(ctx: agents.JobContext):
         
         asyncio.create_task(handle_data())
 
-    await session.start(
-        room=ctx.room,
-        agent=Assistant(),
-        room_input_options=RoomInputOptions(audio_frame_size_ms=20),
-    )
+    try:
+        await session.start(
+            room=ctx.room,
+            agent=Assistant(),
+            room_input_options=RoomInputOptions(audio_frame_size_ms=20),
+        )
+    except Exception as e:
+        print(f"session.start failed (possible Gemini quota/rate limit or bad credentials): {e}")
+        raise
 
     existing_participants = getattr(ctx.room, "remote_participants", {})
     for participant in existing_participants.values():

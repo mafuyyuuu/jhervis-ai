@@ -6,7 +6,7 @@
     max-width: 600px;
     margin: 0 auto 2rem auto;
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--ink-muted);
 }
 
 .contact-buttons {
@@ -27,31 +27,32 @@
 
 .credibility-signals a {
     text-decoration: none;
-    color: rgba(255, 255, 255, 0.88);
-    font-size: 0.78rem;
-    border: 1px solid var(--glass-border);
-    border-radius: 999px;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-chip);
     padding: 6px 12px;
-    background: rgba(10, 20, 40, 0.5);
+    background: var(--panel);
 }
 
 .credibility-signals a:hover {
-    color: var(--neon-cyan);
-    border-color: var(--neon-cyan);
+    color: var(--ink);
+    border-color: var(--accent);
 }
 
 .holo-btn {
     background: transparent;
-    border: 1px solid var(--glass-border);
-    color: var(--neon-cyan);
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
     padding: 14px 32px;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    letter-spacing: 2px;
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -62,47 +63,35 @@
     font-size: 1.2rem;
 }
 
-.holo-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.2), transparent);
-    transition: 0.5s;
-}
-
-.holo-btn:hover {
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
-    transform: translateY(-3px);
-}
-
-.holo-btn:hover::before {
-    left: 100%;
-}
-
 .holo-btn.primary {
-    background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 102, 255, 0.2));
+    background: var(--ink);
+    color: var(--surface);
+    border-color: var(--ink);
+}
+
+.holo-btn.primary:hover {
+    background: transparent;
+    color: var(--ink);
 }
 
 .holo-btn.secondary {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--ink-muted);
 }
 
 .holo-btn.secondary:hover {
-    color: var(--neon-cyan);
+    border-color: var(--ink);
+    color: var(--ink);
 }
 
 .contact-footer {
     margin-top: 4rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--glass-border);
+    border-top: 1px solid var(--line);
 }
 
 .footer-text {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.4);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-subtle);
     letter-spacing: 1px;
 }

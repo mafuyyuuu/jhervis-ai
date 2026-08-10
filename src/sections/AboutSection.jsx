@@ -1,5 +1,4 @@
 import React from 'react';
-import ScanEffect from '../components/ScanEffect';
 import { useScroll } from '../contexts/ScrollContext';
 import './AboutSection.css';
 
@@ -24,7 +23,6 @@ const AboutSection = () => {
 
     return (
         <section id="about" className={isActive ? 'section-active' : ''}>
-            <ScanEffect active={isActive} />
             <div className="about-section-content">
                 <h2 className="section-title">ABOUT ME</h2>
                 <div className="row justify-content-center mb-5">

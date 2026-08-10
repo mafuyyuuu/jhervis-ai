@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState, useMemo, useRef, useCallback } from 'react';
-import { LiveKitRoom, RoomAudioRenderer, useRoomContext, ControlBar, useVoiceAssistant, useAudioPlayback } from "@livekit/components-react";
+import { LiveKitRoom, RoomAudioRenderer, useRoomContext, useVoiceAssistant, useAudioPlayback, useConnectionState } from "@livekit/components-react";
+import { ConnectionState } from "livekit-client";
 import "@livekit/components-styles";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -9,6 +10,7 @@ import './components/ParticleBackground.css';
 import NeuralCore from "./components/neural-core/NeuralCore";
 
 import { useScrollSpy } from "./hooks/useScrollSpy";
+import { useLiveKitToken } from "./hooks/useLiveKitToken";
 
 import { ScrollProvider } from './contexts/ScrollContext';
 
@@ -16,7 +18,6 @@ import ParticleBackground from "./components/ParticleBackground";
 
 import InteractiveCorner from "./components/InteractiveCorner";
 import ChatDisplay from "./components/ChatDisplay";
-import VoiceAssistant from "./components/VoiceAssistant";
 import ProgressIndicator from "./components/ProgressIndicator";
 import IdlePrompt from "./components/IdlePrompt";
 import QuickActions from "./components/QuickActions";
@@ -28,7 +29,7 @@ const ProjectsSection = lazy(() => import("./sections/ProjectsSection"));
 const SkillsSection = lazy(() => import("./sections/SkillsSection"));
 const ContactSection = lazy(() => import("./sections/ContactSection"));
 
-const PortfolioPage = () => {
+const PortfolioPage = ({ aiStatus, onRetryAi }) => {
     const room = useRoomContext();
     const { state: agentState } = useVoiceAssistant();
     const { canPlayAudio, startAudio } = useAudioPlayback(room);
@@ -39,15 +40,26 @@ const PortfolioPage = () => {
     const [showIdlePrompt, setShowIdlePrompt] = useState(false);
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [lastUserMessage, setLastUserMessage] = useState(null);
-    const [hasEnteredExperience, setHasEnteredExperience] = useState(false);
+    // null = gate still up. 'voice' = wants to hear JHERVIS. 'silent' = chose to
+    // just read the portfolio; the agent still answers, in text only.
+    const [entryMode, setEntryMode] = useState(null);
     const [welcomeRequested, setWelcomeRequested] = useState(false);
+    const [showMicHint, setShowMicHint] = useState(true);
+    const hasEnteredExperience = entryMode !== null;
+    const aiUnavailable = aiStatus === 'error';
     const lastScrollY = useRef(0);
     const lastScrollTime = useRef(0);
     const lastNarratedSection = useRef(null);
     const lastAgentState = useRef(null);
     const idleTimerRef = useRef(null);
     const messageIdRef = useRef(0);
-    const isRoomConnected = room?.state === 'connected';
+    // Must come from useConnectionState, not `room.state`: useRoomContext
+    // hands back the Room instance without subscribing to connection events,
+    // and `room.state` is a plain mutable property — reading it directly never
+    // re-renders, so it can stay stuck on "connecting" long after the socket
+    // is live (which also silently blocked publishEvent/narration/queries).
+    const connectionState = useConnectionState(room);
+    const isRoomConnected = connectionState === ConnectionState.Connected;
     
     // Initialize time ref on mount
     useEffect(() => {
@@ -182,7 +194,7 @@ const PortfolioPage = () => {
     }, [startAudio]);
 
     useEffect(() => {
-        if (!hasEnteredExperience || canPlayAudio) return;
+        if (entryMode !== 'voice' || canPlayAudio) return;
 
         const handleUserGesture = () => unlockAudio();
         window.addEventListener("pointerdown", handleUserGesture);
@@ -192,59 +204,91 @@ const PortfolioPage = () => {
             window.removeEventListener("pointerdown", handleUserGesture);
             window.removeEventListener("keydown", handleUserGesture);
         };
-    }, [canPlayAudio, unlockAudio, hasEnteredExperience]);
+    }, [canPlayAudio, unlockAudio, entryMode]);
 
-    const handleStartExperience = useCallback(async () => {
-        setHasEnteredExperience(true);
-        await unlockAudio();
+    const handleEnter = useCallback(async (mode) => {
+        setEntryMode(mode);
+        if (mode === 'voice') await unlockAudio();
     }, [unlockAudio]);
 
+    // Voice-mode visitors get the spoken greeting once audio is actually
+    // unlocked. Silent-mode visitors skip it — the agent would otherwise
+    // narrate into a muted tab and burn quota for nobody.
     useEffect(() => {
+        if (entryMode !== 'voice') return;
         if (!canPlayAudio) {
             setWelcomeRequested(false);
             return;
         }
-        if (!hasEnteredExperience || welcomeRequested || !isRoomConnected) return;
+        if (welcomeRequested || !isRoomConnected) return;
         publishEvent({ type: "welcome_request" });
         setWelcomeRequested(true);
-    }, [hasEnteredExperience, welcomeRequested, publishEvent, canPlayAudio, isRoomConnected]);
+    }, [entryMode, welcomeRequested, publishEvent, canPlayAudio, isRoomConnected]);
 
-    const connectionText = !isRoomConnected
-        ? "Connecting to voice room..."
-        : !canPlayAudio
-            ? "Connected • Tap to enable audio"
-            : agentState === "speaking"
-                ? "JHERVIS is speaking"
-                : agentState === "listening"
-                    ? "Listening..."
-                    : "Connected • Voice ready";
+    const connectionText = aiUnavailable
+        ? "JHERVIS is offline — portfolio still works"
+        : !isRoomConnected
+            ? "Connecting to JHERVIS..."
+            : entryMode === 'silent'
+                ? "JHERVIS ready • Replies in text"
+                : !canPlayAudio
+                    ? "Connected • Tap to enable audio"
+                    : agentState === "speaking"
+                        ? "JHERVIS is speaking"
+                        : agentState === "listening"
+                            ? "Listening..."
+                            : "Connected • Voice ready";
 
-    const connectionStateClass = !isRoomConnected
-        ? "is-connecting"
-        : !canPlayAudio
-            ? "is-blocked"
-            : "is-ready";
+    const connectionStateClass = aiUnavailable
+        ? "is-offline"
+        : !isRoomConnected
+            ? "is-connecting"
+            : !canPlayAudio && entryMode !== 'silent'
+                ? "is-blocked"
+                : "is-ready";
 
     return (
         <ScrollProvider value={{ activeSection }}>
             <NeuralCore isFixed={isScrolled} scrollSpeed={scrollSpeed} />
-            <VoiceAssistant />
             <ProgressIndicator />
 
             <main className="container-fluid">
                 <ParticleBackground />
                 <div className={`connection-pill ${connectionStateClass}`} role="status" aria-live="polite">
-                    {connectionText}
+                    <span>{connectionText}</span>
+                    {aiUnavailable && (
+                        <button className="connection-retry" onClick={onRetryAi}>
+                            Retry
+                        </button>
+                    )}
                 </div>
 
-                {!hasEnteredExperience && (
+                {/* The gate exists only to buy the user gesture that browsers
+                    require before audio can autoplay. If there's no agent to
+                    listen to, there's nothing to unlock — don't put a wall in
+                    front of the portfolio for no reason. */}
+                {!hasEnteredExperience && !aiUnavailable && (
                     <div className="experience-gate">
                         <div className="experience-card">
-                            <h2>Start Experience</h2>
-                            <p>Interactive voice portfolio with chat fallback.</p>
-                            <button className="experience-start-btn" onClick={handleStartExperience}>
-                                Enter Portfolio
-                            </button>
+                            <h2>Meet JHERVIS</h2>
+                            <p>
+                                An AI companion that narrates this portfolio out loud and
+                                answers questions about Jhervin — by voice or in writing.
+                            </p>
+                            <div className="experience-actions">
+                                <button
+                                    className="experience-start-btn"
+                                    onClick={() => handleEnter('voice')}
+                                >
+                                    Enter with voice
+                                </button>
+                                <button
+                                    className="experience-skip-btn"
+                                    onClick={() => handleEnter('silent')}
+                                >
+                                    Just browse quietly
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -259,16 +303,27 @@ const PortfolioPage = () => {
                 {/* Interactive Corner - only visible when scrolled */}
                 <div className={`corner-container ${!isScrolled ? 'corner-hidden' : ''}`}>
                     <InteractiveCorner onQuerySubmit={handleQuerySubmit}>
-                        <ChatDisplay userMessage={lastUserMessage} />
+                        <ChatDisplay userMessage={lastUserMessage} aiStatus={aiStatus} />
                         <QuickActions section={activeSection} onAsk={handleQuerySubmit} />
                     </InteractiveCorner>
-                    <div className="control-bar-fixed">
-                        <ControlBar
-                            controls={{ microphone: true, camera: false, screenShare: false, leave: false }}
-                            variation="minimal"
-                        />
-                    </div>
                 </div>
+
+                {/* Held back until the dock is on screen — the hint talks about
+                    tapping a mic button that lives inside it. */}
+                {entryMode === 'voice' && isScrolled && showMicHint && (
+                    <div className="mic-privacy-hint" role="status">
+                        <span>
+                            <i className="ri-mic-off-line"></i> Mic is off by default — tap it to talk. Nothing is recorded or stored.
+                        </span>
+                        <button
+                            className="mic-privacy-hint-dismiss"
+                            onClick={() => setShowMicHint(false)}
+                            aria-label="Dismiss"
+                        >
+                            <i className="ri-close-line"></i>
+                        </button>
+                    </div>
+                )}
 
                 {/* Sound Toggle Button */}
                 <button 
@@ -279,7 +334,7 @@ const PortfolioPage = () => {
                     <i className={soundEnabled ? 'ri-volume-up-line' : 'ri-volume-mute-line'}></i>
                 </button>
 
-                {hasEnteredExperience && !canPlayAudio && (
+                {entryMode === 'voice' && !canPlayAudio && !aiUnavailable && (
                     <button className="voice-hint-pill" onClick={unlockAudio}>
                         Tap to enable voice
                     </button>
@@ -299,39 +354,26 @@ const PortfolioPage = () => {
 
 // --- MAIN APP ---
 export default function App() {
-    const [token, setToken] = useState("");
     const tokenEndpoint = import.meta.env.VITE_TOKEN_SERVER_URL || "/api";
+    const { token, status, retry } = useLiveKitToken(tokenEndpoint);
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const resp = await fetch(tokenEndpoint);
-                const data = await resp.text();
-                setToken(data);
-            } catch (e) { console.error(e); }
-        })();
-    }, [tokenEndpoint]);
-
-    if (!token) {
-        return (
-            <div className="loading-screen">
-                <div className="loading-core"></div>
-                <p>INITIALIZING NEURAL LINK...</p>
-            </div>
-        );
-    }
-
+    /* The portfolio renders immediately and unconditionally — it is a document
+       first and an AI demo second. LiveKitRoom creates its Room object whether
+       or not a token exists yet, so every LiveKit hook below has its context
+       from the first paint; useLiveKitRoom simply logs "no token yet" and
+       connects on its own once the token lands (or never, if the token server
+       is down, which is now a degraded corner of the page rather than a wall). */
     return (
         <LiveKitRoom
             video={false}
-            audio={true}
-            token={token}
+            audio={false}
+            token={token ?? undefined}
             serverUrl={import.meta.env.VITE_LIVEKIT_URL || "wss://jhervis-iiqthr75.livekit.cloud"}
             data-lk-theme="default"
             style={{ height: '100vh' }}
         >
             <RoomAudioRenderer />
-            <PortfolioPage />
+            <PortfolioPage aiStatus={status} onRetryAi={retry} />
         </LiveKitRoom>
     );
 }

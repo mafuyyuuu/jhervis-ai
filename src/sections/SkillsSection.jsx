@@ -1,6 +1,5 @@
 import React from 'react';
 import SkillBar from '../components/SkillBar';
-import ScanEffect from '../components/ScanEffect';
 import { useScroll } from '../contexts/ScrollContext';
 import './SkillsSection.css';
 
@@ -30,7 +29,6 @@ const SkillsSection = () => {
     
     return (
         <section id="skills" className={isActive ? 'section-active' : ''}>
-            <ScanEffect active={isActive} />
             <div className="skills-section-content">
                 <h2 className="section-title">SKILLS</h2>
                 {Object.entries(SKILLS_DATA).map(([category, skills], catIndex) => (

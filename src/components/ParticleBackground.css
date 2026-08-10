@@ -14,9 +14,9 @@
     left: var(--x);
     width: var(--size);
     height: var(--size);
-    background-color: var(--neon-cyan);
+    background-color: var(--ink);
     border-radius: 50%;
-    opacity: var(--opacity);
+    opacity: calc(var(--opacity) * 0.5);
     animation: particle-animation var(--duration) linear var(--delay) infinite;
 }
 

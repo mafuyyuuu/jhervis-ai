@@ -4,13 +4,11 @@
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: rgba(5, 15, 30, 0.95);
-    border: 1px solid var(--neon-cyan);
-    border-radius: 20px;
+    background: var(--panel);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
     padding: 24px 32px;
     z-index: 999;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 243, 255, 0.1);
     text-align: center;
     max-width: 400px;
     opacity: 0;
@@ -28,23 +26,22 @@
     right: 14px;
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--ink-subtle);
     font-size: 1.2rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
     line-height: 1;
     padding: 4px;
 }
 
 .idle-dismiss:hover {
-    color: var(--neon-cyan);
-    transform: scale(1.1);
+    color: var(--ink);
 }
 
 .idle-icon {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     margin-bottom: 12px;
-    color: var(--neon-cyan);
+    color: var(--ink);
     animation: idle-bounce 2s ease-in-out infinite;
 }
 
@@ -54,7 +51,7 @@
 }
 
 .idle-text {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--ink-muted);
     font-size: 1rem;
     margin: 0 0 20px 0;
     line-height: 1.5;
@@ -68,12 +65,13 @@
 
 .idle-btn {
     padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: all 0.3s ease;
-    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    letter-spacing: 0.05em;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -84,25 +82,25 @@
 }
 
 .idle-btn.primary {
-    background: linear-gradient(135deg, var(--neon-cyan), #0088cc);
-    border: none;
-    color: #000;
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    color: var(--surface);
 }
 
 .idle-btn.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(0, 243, 255, 0.4);
+    background: transparent;
+    color: var(--ink);
 }
 
 .idle-btn.secondary {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--line-strong);
+    color: var(--ink-muted);
 }
 
 .idle-btn.secondary:hover {
-    border-color: rgba(255, 255, 255, 0.4);
-    color: rgba(255, 255, 255, 0.9);
+    border-color: var(--ink);
+    color: var(--ink);
 }
 
 /* Hide on smaller screens */
@@ -113,7 +111,7 @@
         transform: translateY(20px);
         max-width: none;
     }
-    
+
     .idle-prompt.visible {
         transform: translateY(0);
     }

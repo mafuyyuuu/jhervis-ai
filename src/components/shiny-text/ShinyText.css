@@ -1,22 +1,21 @@
 .shiny-text {
-    color: #00f3ff;
+    color: var(--ink);
     background: linear-gradient(
         120deg,
-        rgba(0, 243, 255, 1) 0%,
-        rgba(0, 243, 255, 1) 40%,
-        rgba(255, 255, 255, 1) 50%,
-        rgba(0, 243, 255, 1) 60%,
-        rgba(0, 243, 255, 1) 100%
+        rgba(245, 245, 245, 1) 0%,
+        rgba(245, 245, 245, 1) 40%,
+        rgba(0, 217, 196, 1) 50%,
+        rgba(245, 245, 245, 1) 60%,
+        rgba(245, 245, 245, 1) 100%
     );
     background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: shiny-text-animation 3s linear infinite;
-    font-size: 28px;
-    font-weight: 200;
-    letter-spacing: 15px;
-    filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.5));
+    /* Sizing/weight/spacing are owned by the parent heading (e.g. .main-title)
+       so this component only controls color/shine, not layout. */
+    font: inherit;
 }
 
 .shiny-text.disabled {

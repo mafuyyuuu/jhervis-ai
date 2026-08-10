@@ -1,15 +1,13 @@
 import React from 'react';
-import ScanEffect from '../components/ScanEffect';
 import { useScroll } from '../contexts/ScrollContext';
 import './ContactSection.css';
 
 const ContactSection = () => {
     const { activeSection } = useScroll();
     const isActive = activeSection === 'contact';
-    
+
     return (
         <section id="contact" className={isActive ? 'section-active' : ''}>
-            <ScanEffect active={isActive} />
             <div className="contact-section-content">
                 <h2 className="section-title">GET IN TOUCH</h2>
                 <p>
@@ -36,7 +34,7 @@ const ContactSection = () => {
                 </div>
                 <div className="contact-footer">
                     <p className="footer-text">
-                        <i className="ri-heart-fill" style={{ color: 'var(--neon-cyan)' }}></i> Built by Jhervin Jimenez • Powered by J.H.E.R.V.I.S.
+                        <i className="ri-heart-fill" style={{ color: 'var(--accent)' }}></i> Built by Jhervin Jimenez • Powered by J.H.E.R.V.I.S.
                     </p>
                 </div>
             </div>

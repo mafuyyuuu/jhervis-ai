@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useScroll } from '../contexts/ScrollContext';
+import { useHoverCapable } from '../hooks/useHoverCapable';
+import ProjectPreviewModal from './ProjectPreviewModal';
 import './ProjectCard.css';
 
 const PROJECT_TIPS = {
@@ -11,23 +13,37 @@ const PROJECT_TIPS = {
 };
 
 const ProjectCard = ({ project }) => {
-    const [isFlipped, setIsFlipped] = useState(false);
     const [showTip, setShowTip] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { setHoveredProjectId } = useScroll();
+    const hoverCapable = useHoverCapable();
+    const videoRef = useRef(null);
+    const hasPreviewVideo = Boolean(project.previewVideo);
 
-    const handleCardClick = () => {
-        setIsFlipped(!isFlipped);
-    };
+    const handleCardClick = () => setIsModalOpen(true);
 
     const handleMouseEnter = () => {
         setHoveredProjectId(project.id);
         // Show tip after a delay
         setTimeout(() => setShowTip(true), 1500);
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (hoverCapable && hasPreviewVideo && !prefersReducedMotion) {
+            videoRef.current?.play().catch(() => {
+                // Autoplay can be blocked before any user gesture on the page; the
+                // static image stays visible underneath so this is a silent no-op.
+            });
+        }
     };
 
     const handleMouseLeave = () => {
         setHoveredProjectId(null);
         setShowTip(false);
+
+        if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.currentTime = 0;
+        }
     };
 
     const handleKeyDown = (e) => {
@@ -38,55 +54,48 @@ const ProjectCard = ({ project }) => {
     };
 
     return (
-        <div 
-            className="project-card-scene" 
+        <div
+            className={`project-card ${isModalOpen ? 'is-modal-open' : ''}`}
             onClick={handleCardClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             role="button"
             tabIndex={0}
             onKeyDown={handleKeyDown}
-            aria-label={`${project.title} details`}
-            aria-pressed={isFlipped}
+            aria-label={`${project.title} — view details`}
         >
-            {/* AI Tip Tooltip */}
-            {showTip && !isFlipped && PROJECT_TIPS[project.id] && (
+            {showTip && !isModalOpen && PROJECT_TIPS[project.id] && (
                 <div className="project-tip">
                     <i className="ri-lightbulb-line tip-icon"></i>
                     <span className="tip-text">{PROJECT_TIPS[project.id]}</span>
                 </div>
             )}
-            
-            <div className={`project-card-inner ${isFlipped ? 'is-flipped' : ''}`}>
-                <div className="project-card-face card-front">
-                    <div className="project-image-container">
-                        <img src={project.image} alt={project.title} className="project-image" loading="lazy" decoding="async" />
-                        <div className="project-image-overlay"></div>
-                    </div>
-                    <div className="project-content">
-                        <span className="project-type">{project.type}</span>
-                        <h3>{project.title}</h3>
-                        <p>{project.description}</p>
-                        {project.outcome && <p className="project-outcome"><strong>Outcome:</strong> {project.outcome}</p>}
-                        <span className="click-hint">Click to see details</span>
-                    </div>
-                </div>
-                <div className="project-card-face card-back">
-                    <div className="card-back-content">
-                        <h4>{project.title}</h4>
-                        <p className="long-desc">{project.longDescription}</p>
-                        <div className="tech-list">
-                            {project.technologies.map(tech => (
-                                <span key={tech} className="tech-tag">{tech}</span>
-                            ))}
-                        </div>
-                        <div className="card-links">
-                            <a href={project.liveDemoUrl} className="card-link" target="_blank" rel="noopener noreferrer">Live Demo</a>
-                            <a href={project.sourceCodeUrl} className="card-link" target="_blank" rel="noopener noreferrer">Source Code</a>
-                        </div>
-                    </div>
-                </div>
+
+            <div className="project-image-container">
+                <img src={project.image} alt={project.title} className="project-image" loading="lazy" decoding="async" />
+                {hasPreviewVideo && hoverCapable && (
+                    <video
+                        ref={videoRef}
+                        src={project.previewVideo}
+                        className="project-preview-video"
+                        muted
+                        loop
+                        playsInline
+                    />
+                )}
+                <div className="project-image-overlay"></div>
             </div>
+
+            <div className="project-content">
+                <span className="project-type">{project.type}</span>
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+                <span className="click-hint">View details →</span>
+            </div>
+
+            {isModalOpen && (
+                <ProjectPreviewModal project={project} onClose={() => setIsModalOpen(false)} />
+            )}
         </div>
     );
 };

@@ -1,20 +1,19 @@
 .user-query-display {
-    background: var(--glass-bg);
-    border: 1px solid var(--neon-cyan);
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
-    border-radius: 10px;
+    background: var(--panel);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
     padding: 15px 20px;
     margin-bottom: 1rem;
     width: 100%;
     max-width: 400px;
-    font-family: 'Courier New', monospace;
-    color: #fff;
+    font-family: var(--font-mono);
+    color: var(--ink);
     opacity: 0;
     animation: query-fade-in-out 4s ease-in-out;
 }
 
 .query-label {
-    color: var(--neon-pink);
+    color: var(--accent);
     font-weight: bold;
     margin-right: 10px;
 }

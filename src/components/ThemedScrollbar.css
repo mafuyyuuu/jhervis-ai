@@ -8,10 +8,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #00f3ff;
+    background: rgba(245, 245, 245, 0.25);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #fff;
+    background: rgba(245, 245, 245, 0.5);
 }

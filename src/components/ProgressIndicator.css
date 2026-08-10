@@ -19,45 +19,43 @@
 
 .progress-dot {
     appearance: none;
-    width: 14px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    border: 1px solid var(--line-strong);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     position: relative;
     z-index: 2;
     padding: 0;
 }
 
 .progress-dot:hover {
-    background: rgba(0, 243, 255, 0.3);
-    border-color: var(--neon-cyan);
+    border-color: var(--accent);
     transform: scale(1.2);
 }
 
 .progress-dot.active {
-    background: var(--neon-cyan);
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px rgba(0, 243, 255, 0.3);
-    transform: scale(1.3);
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.2);
 }
 
 .progress-dot.visited {
-    background: rgba(0, 243, 255, 0.4);
-    border-color: rgba(0, 243, 255, 0.6);
+    background: var(--ink-subtle);
+    border-color: var(--line-strong);
 }
 
 .progress-line {
-    width: 2px;
+    width: 1px;
     height: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    background: var(--line);
+    transition: background 0.2s ease;
 }
 
 .progress-line.visited {
-    background: linear-gradient(180deg, var(--neon-cyan), rgba(0, 243, 255, 0.3));
+    background: var(--line-strong);
 }
 
 .progress-label {
@@ -65,16 +63,16 @@
     left: 30px;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(5, 15, 30, 0.9);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     padding: 6px 12px;
-    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
     letter-spacing: 1px;
-    color: var(--neon-cyan);
+    color: var(--ink);
     white-space: nowrap;
     animation: label-fade-in 0.2s ease;
-    backdrop-filter: blur(10px);
 }
 
 @keyframes label-fade-in {

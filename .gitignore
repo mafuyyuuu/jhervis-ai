@@ -38,3 +38,5 @@ api/.env.*
 *.njsproj
 *.sln
 *.sw?
+.vercel
+.env*

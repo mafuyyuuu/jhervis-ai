@@ -8,10 +8,7 @@
     align-items: center;
     text-align: center;
     position: relative;
-    background:
-        radial-gradient(circle at 50% 30%, rgba(0, 243, 255, 0.14), transparent 45%),
-        radial-gradient(circle at 20% 80%, rgba(0, 102, 255, 0.1), transparent 45%),
-        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.08), transparent 45%);
+    background: var(--surface);
 }
 
 .hero-content {
@@ -22,25 +19,30 @@
 }
 
 .hero-text .main-title {
-    font-size: 4rem;
-    font-weight: 700;
-    letter-spacing: 0.5rem;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: 6rem;
+    line-height: 0.95;
+    font-weight: 400;
+    letter-spacing: 0.05em;
     margin-bottom: 0.5rem;
 }
 
 .hero-text .subtitle {
-    font-size: 1.2rem;
+    font-family: var(--font-mono);
+    font-size: 1rem;
     letter-spacing: 0.3rem;
-    opacity: 0.7;
+    text-transform: uppercase;
+    color: var(--ink-muted);
     margin-bottom: 1rem;
 }
 
 .hero-text .value-prop {
     max-width: 760px;
     margin: 0 auto 1.3rem;
-    color: rgba(255, 255, 255, 0.86);
-    letter-spacing: 0.04rem;
-    font-size: 1rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.02rem;
+    font-size: 1.05rem;
 }
 
 .hero-signals {
@@ -52,12 +54,12 @@
 }
 
 .hero-signals span {
-    border: 1px solid var(--glass-border);
-    border-radius: 999px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-chip);
     padding: 5px 12px;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(8, 18, 36, 0.55);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
     letter-spacing: 0.06rem;
 }
 
@@ -71,41 +73,59 @@
 
 .hero-cta {
     text-decoration: none;
-    border-radius: 999px;
-    padding: 10px 18px;
-    font-size: 0.83rem;
+    border-radius: var(--radius);
+    padding: 12px 22px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
     letter-spacing: 0.08em;
-    border: 1px solid var(--glass-border);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    text-transform: uppercase;
+    border: 1px solid var(--line-strong);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .hero-cta.primary {
-    color: var(--neon-cyan);
-    border-color: var(--neon-cyan);
-    background: linear-gradient(135deg, rgba(0, 243, 255, 0.18), rgba(0, 102, 255, 0.16));
+    color: var(--surface);
+    border-color: var(--ink);
+    background: var(--ink);
+}
+
+.hero-cta.primary:hover {
+    background: transparent;
+    color: var(--ink);
 }
 
 .hero-cta.secondary {
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(8, 18, 36, 0.62);
+    color: var(--ink-muted);
+    background: transparent;
 }
 
-.hero-cta:hover {
-    transform: translateY(-2px);
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 22px rgba(0, 243, 255, 0.28);
+.hero-cta.secondary:hover {
+    border-color: var(--ink);
+    color: var(--ink);
 }
 
 .hero-text .invitation {
-    font-size: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
     letter-spacing: 0.2rem;
-    opacity: 0.5;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
 }
 
 @media (max-width: 768px) {
     .hero-text .main-title {
-        font-size: 2.7rem;
-        letter-spacing: 0.26rem;
+        font-size: 3.2rem;
+        letter-spacing: 0.02em;
+    }
+
+    /* Holds the in-flow mobile orb (NeuralCore `inline` variant) rather than
+       reserving blank space for a floating one. */
+    .neural-core-placeholder {
+        height: 160px;
+    }
+
+    .hero-content {
+        gap: 1.5rem;
     }
 }
 
@@ -123,12 +143,12 @@
 
 .scroll-down-indicator span {
     display: block;
-    width: 12px;
-    height: 12px;
-    border-bottom: 2px solid var(--neon-cyan);
-    border-right: 2px solid var(--neon-cyan);
+    width: 10px;
+    height: 10px;
+    border-bottom: 1px solid var(--ink-subtle);
+    border-right: 1px solid var(--ink-subtle);
     transform: rotate(45deg);
-    margin: -5px;
+    margin: -4px;
     animation: scroll-pulse 2s infinite;
 }
 

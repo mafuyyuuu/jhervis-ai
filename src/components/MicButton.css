@@ -1,0 +1,142 @@
+/* ========== MIC BUTTON ========== */
+.mic-button {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--surface);
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.mic-button:hover:not(:disabled) {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.mic-button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* Live mic reads as accent-filled so "on" is unmistakable at a glance. */
+.mic-button.is-on {
+    background: var(--accent-listening);
+    border-color: var(--accent-listening);
+    color: var(--surface);
+    animation: mic-live-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes mic-live-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(94, 230, 160, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(94, 230, 160, 0); }
+}
+
+.mic-error {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    right: 0;
+    width: max-content;
+    max-width: 240px;
+    padding: 8px 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line-strong);
+    background: var(--panel);
+    color: var(--ink-muted);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    z-index: 20;
+}
+
+/* ========== CONFIRM DIALOG ========== */
+.mic-confirm-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1300;
+}
+
+.mic-confirm {
+    width: 100%;
+    max-width: 400px;
+    background: var(--panel);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    padding: 24px;
+}
+
+.mic-confirm h4 {
+    margin: 0 0 10px;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    font-size: 1.25rem;
+    color: var(--ink);
+}
+
+.mic-confirm p {
+    margin: 0 0 20px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--ink-muted);
+}
+
+.mic-confirm p strong {
+    color: var(--ink);
+}
+
+.mic-confirm-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.mic-confirm-btn {
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.mic-confirm-btn.primary {
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    color: var(--surface);
+}
+
+.mic-confirm-btn.primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.mic-confirm-btn.secondary {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-muted);
+}
+
+.mic-confirm-btn.secondary:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mic-button.is-on {
+        animation: none;
+    }
+}

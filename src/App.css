@@ -1,13 +1,35 @@
 :root {
-    --neon-cyan: #00f3ff;
-    --neon-pink: #ff00ff;
-    --neon-blue: #0066ff;
-    --neon-green: #00ff88;
-    --neon-orange: #ff9500;
-    --dark-bg: #030308;
-    --glass-bg: rgba(10, 20, 40, 0.4);
-    --glass-border: rgba(0, 243, 255, 0.15);
-    --text-glow: 0 0 10px rgba(0, 243, 255, 0.5);
+    /* Editorial palette */
+    --ink: #f5f5f5;
+    --ink-muted: rgba(245, 245, 245, 0.62);
+    --ink-subtle: rgba(245, 245, 245, 0.35);
+    --surface: #0a0a0a;
+    --panel: #131313;
+    --line: rgba(245, 245, 245, 0.14);
+    --line-strong: rgba(245, 245, 245, 0.32);
+    --accent: #00d9c4;
+    --accent-listening: #5ee6a0;
+    --accent-thinking: #e0a940;
+    --radius: 4px;
+    --radius-md: 10px;
+    --radius-chip: 999px;
+
+    --font-display: 'Anton', -apple-system, sans-serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+    /* Legacy aliases — the rest of the codebase is being swept from these
+       names to the tokens above; remove this block once nothing references
+       var(--neon-*) / var(--glass-*) / var(--dark-bg) / var(--text-glow) anymore. */
+    --neon-cyan: var(--accent);
+    --neon-green: var(--accent-listening);
+    --neon-orange: var(--accent-thinking);
+    --neon-pink: var(--accent);
+    --neon-blue: var(--accent);
+    --dark-bg: var(--surface);
+    --glass-bg: var(--panel);
+    --glass-border: var(--line);
+    --text-glow: none;
 }
 
 * {
@@ -17,31 +39,31 @@
 body {
     margin: 0;
     padding: 0;
-    background: var(--dark-bg);
-    color: var(--neon-cyan);
-    font-family: 'Poppins', -apple-system, sans-serif;
+    background:
+        radial-gradient(ellipse 900px 600px at 50% -5%, rgba(0, 217, 196, 0.08), transparent 60%),
+        radial-gradient(ellipse 700px 500px at 100% 100%, rgba(0, 217, 196, 0.04), transparent 60%),
+        var(--surface);
+    color: var(--ink);
+    font-family: var(--font-body);
     overflow-x: hidden;
+}
+
+/* Subtle film grain — gives the flat editorial surfaces some tactile depth
+   without the grid-overlay/neon-particle "cyberpunk HUD" look. */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.05;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 [data-lk-theme],
 [data-lk-theme] .lk-room-container {
     background: transparent !important;
-}
-
-/* Grid overlay */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-    z-index: -2;
 }
 
 main {
@@ -55,34 +77,12 @@ section {
     justify-content: center;
     align-items: center;
     padding: 128px 64px;
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--line);
 }
 
-/* ========== LOADING SCREEN ========== */
-.loading-screen {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    background: var(--dark-bg);
-}
-
-.loading-core {
-    width: 80px;
-    height: 80px;
-    border: 2px solid var(--glass-border);
-    border-top-color: var(--neon-cyan);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-.loading-screen p {
-    font-size: 12px;
-    letter-spacing: 5px;
-    animation: blink 1.5s infinite;
-}
+/* The full-screen "INITIALIZING NEURAL LINK..." loader is gone on purpose: the
+   portfolio no longer waits on the LiveKit token to render, so there is nothing
+   left to block on. Agent availability is reported by .connection-pill instead. */
 
 /* ========== EXPERIENCE START ========== */
 .experience-gate {
@@ -92,8 +92,7 @@ section {
     align-items: center;
     justify-content: center;
     z-index: 1200;
-    background: radial-gradient(circle at center, rgba(3, 3, 8, 0.35), rgba(3, 3, 8, 0.82));
-    backdrop-filter: blur(2px);
+    background: rgba(10, 10, 10, 0.82);
 }
 
 .experience-card {
@@ -101,38 +100,70 @@ section {
     width: calc(100% - 32px);
     text-align: center;
     padding: 32px 28px;
-    border-radius: 20px;
-    border: 1px solid var(--glass-border);
-    background: rgba(6, 16, 34, 0.86);
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    background: var(--panel);
 }
 
 .experience-card h2 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
     margin: 0 0 10px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
 }
 
 .experience-card p {
     margin: 0 0 20px;
-    color: rgba(255, 255, 255, 0.72);
+    color: var(--ink-muted);
     font-size: 0.95rem;
 }
 
+.experience-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .experience-start-btn {
-    border: 1px solid var(--neon-cyan);
-    background: linear-gradient(135deg, rgba(0, 243, 255, 0.22), rgba(0, 102, 255, 0.2));
-    color: var(--neon-cyan);
-    border-radius: 999px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--surface);
+    border-radius: var(--radius);
     padding: 12px 28px;
-    font-size: 0.92rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
     letter-spacing: 0.08em;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .experience-start-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 26px rgba(0, 243, 255, 0.35);
+    background: transparent;
+    color: var(--ink);
+}
+
+/* The way out of the gate for anyone who doesn't want audio. Deliberately
+   present and legible rather than a dismissive "x" — reading the portfolio
+   without voice is a first-class path, not a failure mode. */
+.experience-skip-btn {
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--ink-muted);
+    border-radius: var(--radius);
+    padding: 12px 28px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.experience-skip-btn:hover {
+    border-color: var(--ink);
+    color: var(--ink);
 }
 
 .connection-pill {
@@ -140,25 +171,52 @@ section {
     top: 22px;
     left: 22px;
     z-index: 1100;
-    border-radius: 999px;
-    border: 1px solid var(--glass-border);
-    background: rgba(5, 15, 30, 0.85);
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
     letter-spacing: 0.04em;
     padding: 8px 12px;
 }
 
+.connection-retry {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.connection-retry:hover {
+    border-color: var(--accent);
+}
+
 .connection-pill.is-ready {
-    border-color: rgba(0, 255, 136, 0.55);
+    border-color: var(--accent-listening);
+    color: var(--ink);
 }
 
 .connection-pill.is-connecting {
-    border-color: rgba(255, 149, 0, 0.45);
+    border-color: var(--accent-thinking);
 }
 
 .connection-pill.is-blocked {
-    border-color: rgba(255, 0, 255, 0.4);
+    border-color: var(--line-strong);
+}
+
+.connection-pill.is-offline {
+    border-color: var(--line-strong);
+    color: var(--ink-subtle);
 }
 
 @keyframes spin {
@@ -178,7 +236,11 @@ section {
     display: none;
 }
 
-/* ========== CORNER CONTAINER ========== */
+/* ========== CORNER CONTAINER ==========
+   Sole owner of fixed positioning for the bottom-right chat dock. The mic now
+   lives inside the chat panel (src/components/MicButton), so there's no second
+   fixed sibling computing its own offset — that's what used to break the mic's
+   position the moment the panel's width changed (e.g. on mobile). */
 .corner-container {
     position: fixed;
     bottom: 30px;
@@ -197,115 +259,14 @@ section {
     pointer-events: none;
 }
 
-/* Control Bar Fixed Position */
-.control-bar-fixed {
-    position: fixed;
-    bottom: 30px;
-    right: 420px;
-    z-index: 1001;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.corner-hidden ~ .control-bar-fixed,
-.corner-container.corner-hidden + .control-bar-fixed {
-    opacity: 0;
-    transform: translateX(100px);
-    pointer-events: none;
-}
-
-.control-bar-fixed .lk-control-bar {
-    background: rgba(5, 15, 30, 0.85) !important;
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 16px !important;
-    padding: 12px !important;
-    backdrop-filter: blur(20px) !important;
-}
-
-.control-bar-fixed .lk-button {
-    background: rgba(0, 243, 255, 0.1) !important;
-    border: 1px solid rgba(0, 243, 255, 0.3) !important;
-    width: 50px !important;
-    height: 50px !important;
-    border-radius: 12px !important;
-    transition: all 0.3s ease !important;
-}
-
-.control-bar-fixed .lk-button:hover {
-    background: rgba(0, 243, 255, 0.2) !important;
-    border-color: var(--neon-cyan) !important;
-    transform: scale(1.05) !important;
-}
-
-.control-bar-fixed .lk-button svg {
-    color: var(--neon-cyan) !important;
-    filter: drop-shadow(0 0 6px rgba(0, 243, 255, 0.5));
-    width: 17px !important;
-    height: 17px !important;
-}
-
-/*!* ========== LIVEKIT DEVICE SELECTOR DROPDOWN ========== *!*/
-
-/*    background: rgba(5, 15, 30, 0.95) !important;*/
-/*    border: 1px solid var(--neon-cyan) !important;*/
-/*    border-radius: 12px !important;*/
-/*    backdrop-filter: blur(20px) !important;*/
-/*    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 243, 255, 0.1) !important;*/
-/*    padding: 8px !important;*/
-/*    min-width: 250px !important;*/
-/*    overflow: hidden !important;*/
-/*}*/
-
-/*.lk-device-menu .lk-button {*/
-/*    background: transparent !important;*/
-/*    border: none !important;*/
-/*    border-radius: 8px !important;*/
-/*    color: rgba(255, 255, 255, 0.8) !important;*/
-/*    padding: 12px 16px !important;*/
-/*    font-size: 0.85rem !important;*/
-/*    letter-spacing: 0.5px !important;*/
-/*    transition: all 0.2s ease !important;*/
-/*    width: 100% !important;*/
-/*    justify-content: flex-start !important;*/
-/*    height: auto !important;*/
-/*}*/
-
-/*.lk-device-menu .lk-button:hover {*/
-/*    background: rgba(0, 243, 255, 0.1) !important;*/
-/*    color: var(--neon-cyan) !important;*/
-/*    transform: none !important;*/
-/*}*/
-
-/*.lk-device-menu .lk-button[data-lk-active="true"],*/
-/*.lk-device-menu .lk-button.lk-active {*/
-/*    background: rgba(0, 243, 255, 0.15) !important;*/
-/*    color: var(--neon-cyan) !important;*/
-/*    border-left: 2px solid var(--neon-cyan) !important;*/
-/*}*/
-
-/*.lk-device-menu .lk-button svg {*/
-/*    width: 16px !important;*/
-/*    height: 16px !important;*/
-/*    margin-right: 10px !important;*/
-/*    color: var(--neon-cyan) !important;*/
-/*}*/
-
-/* Menu button (the dropdown arrow) - HIDE IT */
-.lk-button-group .lk-button.lk-button-menu,
-.lk-button-group-menu,
-[data-lk-button-menu],
-.lk-button-group > button:last-child:not(:first-child) {
-    display: none !important;
-}
-
-/* Button group container */
-.lk-button-group {
-    border-radius: 12px !important;
-    overflow: hidden !important;
-}
-
-/* Make sure only the main mic button is visible and styled */
-.control-bar-fixed .lk-button-group > .lk-button:first-child {
-    border-radius: 12px !important;
+@media (max-width: 768px) {
+    .corner-container {
+        align-items: stretch;
+        right: 15px;
+        left: 15px;
+        bottom: 15px;
+        gap: 10px;
+    }
 }
 
 /* ========== SECTION HIGHLIGHT EFFECT ========== */
@@ -316,19 +277,16 @@ section.section-active {
 section.section-active::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border: 2px solid transparent;
-    border-image: linear-gradient(135deg, var(--neon-cyan), transparent, var(--neon-pink)) 1;
+    inset: 0;
+    border-bottom: 1px solid var(--accent);
+    opacity: 0;
     pointer-events: none;
-    animation: section-glow 2s ease-in-out;
+    animation: section-glow 1.5s ease-in-out;
 }
 
 @keyframes section-glow {
     0% { opacity: 0; }
-    50% { opacity: 1; }
+    40% { opacity: 1; }
     100% { opacity: 0; }
 }
 
@@ -345,29 +303,27 @@ section.section-active::after {
 }
 
 .progress-dot {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    border: 1px solid var(--line-strong);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .progress-dot:hover {
-    background: rgba(0, 243, 255, 0.3);
-    border-color: var(--neon-cyan);
+    border-color: var(--accent);
 }
 
 .progress-dot.active {
-    background: var(--neon-cyan);
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 15px var(--neon-cyan);
+    background: var(--accent);
+    border-color: var(--accent);
 }
 
 .progress-dot.visited {
-    background: rgba(0, 243, 255, 0.5);
-    border-color: var(--neon-cyan);
+    background: var(--ink-subtle);
+    border-color: var(--line-strong);
 }
 
 /* ========== SOUND TOGGLE ========== */
@@ -377,20 +333,18 @@ section.section-active::after {
     right: 20px;
     width: 44px;
     height: 44px;
-    border-radius: 12px;
-    background: rgba(5, 15, 30, 0.8);
-    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    background: var(--panel);
+    border: 1px solid var(--line);
     cursor: pointer;
     font-size: 1.2rem;
+    color: var(--ink);
     z-index: 1000;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    transition: border-color 0.2s ease;
 }
 
 .sound-toggle:hover {
-    border-color: var(--neon-cyan);
-    background: rgba(0, 243, 255, 0.1);
-    transform: scale(1.05);
+    border-color: var(--accent);
 }
 
 .voice-hint-pill {
@@ -399,25 +353,68 @@ section.section-active::after {
     right: 76px;
     z-index: 1000;
     padding: 9px 13px;
-    border-radius: 999px;
-    border: 1px solid var(--glass-border);
-    background: rgba(5, 15, 30, 0.86);
-    color: rgba(255, 255, 255, 0.82);
-    font-size: 0.74rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
     letter-spacing: 0.04em;
     cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    transition: border-color 0.2s ease;
 }
 
 .voice-hint-pill:hover {
-    transform: translateY(-1px);
-    border-color: var(--neon-cyan);
+    border-color: var(--accent);
+}
+
+/* ========== MIC PRIVACY HINT ========== */
+.mic-privacy-hint {
+    position: fixed;
+    top: 70px;
+    right: 22px;
+    z-index: 1002;
+    max-width: 280px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line-strong);
+    background: var(--panel);
+    color: var(--ink-muted);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    animation: idle-fade-in 0.4s ease;
+}
+
+.mic-privacy-hint-dismiss {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--ink-subtle);
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.mic-privacy-hint-dismiss:hover {
+    color: var(--ink);
+}
+
+@media (max-width: 768px) {
+    .mic-privacy-hint {
+        left: 15px;
+        right: 15px;
+        max-width: none;
+    }
 }
 
 a:focus-visible,
 button:focus-visible,
 [role="button"]:focus-visible {
-    outline: 2px solid var(--neon-cyan);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
@@ -427,23 +424,23 @@ button:focus-visible,
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(5, 15, 30, 0.8);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
     padding: 8px 16px;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-muted);
     z-index: 50;
-    backdrop-filter: blur(10px);
 }
 
 .keyboard-hint kbd {
-    background: rgba(0, 243, 255, 0.1);
-    border: 1px solid rgba(0, 243, 255, 0.3);
-    border-radius: 4px;
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    border-radius: 3px;
     padding: 2px 6px;
     margin: 0 4px;
-    color: var(--neon-cyan);
+    color: var(--ink);
 }
 
 
@@ -453,23 +450,22 @@ button:focus-visible,
     bottom: 120px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(5, 15, 30, 0.9);
-    border: 1px solid var(--neon-cyan);
-    border-radius: 16px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-md);
     padding: 16px 24px;
     z-index: 999;
     animation: idle-fade-in 0.5s ease;
-    backdrop-filter: blur(10px);
 }
 
 .idle-prompt p {
     margin: 0;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--ink-muted);
 }
 
 .idle-prompt .prompt-cta {
-    color: var(--neon-cyan);
+    color: var(--accent);
     font-weight: 600;
 }
 

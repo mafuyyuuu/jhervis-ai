@@ -1,78 +1,57 @@
-.project-card-scene {
-    width: 100%;
-    height: 450px; /* Give the card a fixed height */
-    perspective: 1000px;
+.project-card {
+    display: flex;
+    flex-direction: column;
     cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.project-card-scene.glow {
-    box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
-    border-color: var(--neon-cyan);
-}
-
-
-.project-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
-}
-
-/* Hover effect - only lift, no flip */
-.project-card-scene:hover .project-card-inner:not(.is-flipped) {
-    transform: translateY(-8px);
-}
-
-/* When flipped, maintain rotation on hover */
-.project-card-scene:hover .project-card-inner.is-flipped {
-    transform: rotateY(180deg) translateY(-8px);
-}
-
-/* Flip state - ONLY triggered by click via JavaScript class */
-.project-card-inner.is-flipped {
-    transform: rotateY(180deg);
-}
-
-.project-card-face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden; /* Safari */
-    
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    backdrop-filter: blur(20px);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
     overflow: hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+    position: relative;
 }
 
-/* Hover glow effect on card face */
-.project-card-scene:hover .project-card-face {
-    border-color: rgba(0, 243, 255, 0.4);
-    box-shadow: 0 10px 40px rgba(0, 243, 255, 0.15);
+.project-card:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-4px);
 }
 
-/* FRONT FACE STYLES */
-.card-front {
-    /* Styles for front face content */
+/* While this card's modal is open the pointer is usually still over the card;
+   let it settle instead of lifting/animating behind the overlay. */
+.project-card.is-modal-open,
+.project-card.is-modal-open:hover {
+    transform: none;
 }
 
 .project-image-container {
     width: 100%;
-    height: 200px;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
     position: relative;
+    flex-shrink: 0;
 }
 
 .project-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: saturate(0.8) brightness(0.8);
+    filter: grayscale(0.6) brightness(0.85);
+}
+
+/* Hover-to-play preview clip, layered over the static image so there's no
+   flash of empty space before the video has a frame to show. */
+.project-preview-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.project-card:hover .project-preview-video {
+    opacity: 1;
 }
 
 .project-image-overlay {
@@ -81,138 +60,76 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(180deg, transparent 0%, rgba(0, 20, 40, 0.9) 100%);
+    background: linear-gradient(180deg, transparent 0%, rgba(10, 10, 10, 0.85) 100%);
 }
 
 .project-content {
-    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 22px;
 }
 
 .project-content .project-type {
     display: inline-block;
+    align-self: flex-start;
+    font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 2px;
-    color: var(--neon-cyan);
-    background: rgba(0, 243, 255, 0.1);
+    text-transform: uppercase;
+    color: var(--ink-muted);
     padding: 4px 12px;
-    border-radius: 20px;
-    border: 1px solid rgba(0, 243, 255, 0.3);
-    margin-bottom: 12px;
+    border-radius: var(--radius-chip);
+    border: 1px solid var(--line-strong);
+    margin-bottom: 14px;
 }
 
 .project-content h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #fff;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--ink);
     margin-bottom: 10px;
 }
 
 .project-content p {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 0;
-}
-
-.project-content .project-outcome {
-    margin-top: 10px;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.86);
-}
-
-.project-content .project-outcome strong {
-    color: var(--neon-cyan);
-}
-
-
-/* BACK FACE STYLES */
-.card-back {
-    transform: rotateY(180deg);
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-}
-
-.card-back-content h4 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--neon-cyan);
-    margin-bottom: 1rem;
-    text-align: center;
-}
-
-.card-back-content .long-desc {
     font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.7;
-    flex-grow: 1;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    margin-bottom: 0;
+    flex: 1;
 }
 
-.tech-list {
-    margin: 1.5rem 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.tech-tag {
-    background: rgba(0, 243, 255, 0.1);
-    border: 1px solid rgba(0, 243, 255, 0.2);
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.8rem;
-    color: var(--neon-cyan);
-}
-
-.card-links {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    border-top: 1px solid var(--glass-border);
-    padding-top: 1rem;
-}
-
-.card-link {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.card-link:hover {
-    color: var(--neon-cyan);
-    text-shadow: 0 0 10px var(--neon-cyan);
-}
-
-/* Click Hint */
 .click-hint {
     display: block;
-    margin-top: 15px;
+    margin-top: 18px;
+    font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
-    letter-spacing: 1px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    letter-spacing: 0.5px;
+    color: var(--ink-subtle);
+    transition: color 0.2s ease;
 }
 
-.project-card-scene:hover .click-hint {
-    opacity: 1;
+.project-card:hover .click-hint {
+    color: var(--accent);
 }
 
-.project-card-scene:focus-visible .project-card-face {
-    border-color: var(--neon-cyan);
-    box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.4), 0 10px 35px rgba(0, 243, 255, 0.2);
+.project-card:focus-visible {
+    outline: none;
+    border-color: var(--accent);
 }
 
 /* Project Tip Tooltip */
 .project-tip {
     position: absolute;
-    top: -60px;
+    top: -50px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(5, 15, 30, 0.95);
-    border: 1px solid var(--neon-cyan);
-    border-radius: 12px;
+    background: var(--panel);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
     padding: 10px 16px;
     display: flex;
     align-items: center;
@@ -221,7 +138,6 @@
     animation: tip-pop-in 0.3s ease;
     white-space: nowrap;
     max-width: 300px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 @keyframes tip-pop-in {
@@ -236,12 +152,12 @@
 }
 
 .project-tip .tip-icon {
-    font-size: 1.2rem;
-    color: var(--neon-cyan);
+    font-size: 1.1rem;
+    color: var(--accent);
 }
 
 .project-tip .tip-text {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--ink-muted);
     white-space: normal;
 }
