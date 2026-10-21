@@ -64,19 +64,21 @@
     justify-content: center;
     border: none;
     border-radius: var(--radius);
-    background: var(--ink);
-    color: var(--surface);
+    background: var(--action);
+    color: var(--action-ink);
+    box-shadow: 0 0 18px var(--action-glow);
     font-size: 1.1rem;
     cursor: pointer;
     transition: background 0.2s ease, opacity 0.2s ease;
 }
 
 .hero-ask-submit:hover:not(:disabled) {
-    background: var(--accent);
+    background: var(--action-hover);
 }
 
 .hero-ask-submit:disabled {
     opacity: 0.35;
+    box-shadow: none;
     cursor: default;
 }
 

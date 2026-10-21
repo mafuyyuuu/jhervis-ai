@@ -4,7 +4,7 @@
     align-items: center;
     text-align: center;
     position: relative;
-    background: var(--surface);
+    background: transparent;
 }
 
 .hero-content {
@@ -149,4 +149,15 @@
         opacity: 0;
         transform: rotate(45deg) translate(10px, 10px);
     }
+}
+
+.hero-text .hero-acronym {
+    max-width: 36rem;
+    margin: 0.6rem 0 1.2rem;
+    font-family: var(--font-mono);
+    font-size: clamp(0.72rem, 1.5vw, 0.88rem);
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+    color: #a9d8bd;
+    text-wrap: balance;
 }

@@ -49,25 +49,14 @@
 }
 
 .details-list li {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 15px 20px;
-    margin-bottom: 1rem;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
     font-size: 1rem;
+    line-height: 1.65;
     color: var(--ink-muted);
-    transition: border-color 0.2s ease, transform 0.2s ease;
-    opacity: 0;
-    animation: fade-in-up 0.5s ease forwards;
+    cursor: default;
 }
 
-.details-list li:hover {
-    transform: translateX(6px);
-    border-color: var(--accent);
-}
-
-.details-list li::before {
-    content: '»';
-    margin-right: 10px;
-    color: var(--accent);
+.details-list li:last-child {
+    border-bottom: 0;
 }

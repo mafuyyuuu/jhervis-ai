@@ -64,14 +64,16 @@
 }
 
 .holo-btn.primary {
-    background: var(--ink);
-    color: var(--surface);
-    border-color: var(--ink);
+    background: var(--action);
+    color: var(--action-ink);
+    border-color: var(--action);
+    box-shadow: 0 0 24px var(--action-glow);
 }
 
 .holo-btn.primary:hover {
-    background: transparent;
-    color: var(--ink);
+    background: var(--action-hover);
+    border-color: var(--action-hover);
+    color: var(--action-ink);
 }
 
 .holo-btn.secondary {

@@ -16,7 +16,8 @@ const HeroSection = ({ onAsk, aiStatus }) => {
                     <h1 className="main-title">
                         <ShinyText text="J.H.E.R.V.I.S." />
                     </h1>
-                    <p className="subtitle">JHERVIN's AI Digital Companion</p>
+                    <p className="hero-acronym">Just Here Executing Rather Very Intelligent Stuff.</p>
+                    <p className="subtitle">Jhervin’s AI Digital Companion</p>
                     <p className="value-prop">
                         Ask about Jhervin's work and this portfolio answers you — out loud,
                         or in writing. Built for internship, junior, and freelance opportunities.
@@ -25,7 +26,7 @@ const HeroSection = ({ onAsk, aiStatus }) => {
                     <HeroAsk onAsk={onAsk} disabled={aiStatus === 'error'} />
 
                     <div className="hero-signals" aria-label="Credibility highlights">
-                        <span>5 showcased builds</span>
+                        <span>Full-stack development &amp; AI</span>
                         <span>BSIT @ PLP</span>
                         <span>President&apos;s Lister</span>
                     </div>

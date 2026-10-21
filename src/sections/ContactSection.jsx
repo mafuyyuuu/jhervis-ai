@@ -21,7 +21,7 @@ const ContactSection = () => {
                 <div className="contact-buttons">
                     <a href="mailto:jhervinjimenez03@gmail.com" className="holo-btn primary">
                         <i className="ri-mail-line btn-icon"></i>
-                        SAY HELLO
+                        SEND MESSAGE
                     </a>
                     <a href="https://github.com/mafuyyuuu" target="_blank" rel="noopener noreferrer" className="holo-btn secondary">
                         <i className="ri-github-fill btn-icon"></i>

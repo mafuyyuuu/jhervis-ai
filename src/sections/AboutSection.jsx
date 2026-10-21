@@ -24,12 +24,12 @@ const AboutSection = () => {
     return (
         <section id="about" className={isActive ? 'section-active' : ''}>
             <div className="about-section-content">
-                <h2 className="section-title">ABOUT ME</h2>
+                <h2 className="section-title">ABOUT JHERVIN</h2>
                 <div className="row justify-content-center mb-5">
                     <div className="col-md-10">
                         <div className="profile-summary">
                             <p>
-                                I am Jhervin Jimenez, a 23-year-old creator and aspiring AI engineer currently studying BSIT at Pamantasan ng Lungsod ng Pasig. With a passion for technology and creativity, I thrive on building innovative solutions and learning new things. My journey is driven by a blend of academic excellence, creative pursuits, and a strong desire for self-growth.
+                                Jhervin Jimenez is a full-stack developer based in the Philippines and a BSIT student at Pamantasan ng Lungsod ng Pasig. He brings a year of professional remote development experience with React, Node.js, and Firebase. As the lead developer of Project TRACE, he works across frontend interfaces, backend services, workflow automation, and deployment. He enjoys turning everyday problems into practical tools and improving his work through testing, feedback, and collaboration.
                             </p>
                         </div>
                     </div>
@@ -39,13 +39,13 @@ const AboutSection = () => {
                     <div className="col-md-6">
                         <h3 className="subsection-title">Achievements</h3>
                         <ul className="details-list">
-                            {achievements.map((item, index) => <li key={index} style={{ animationDelay: `${index * 0.1}s` }}>{item}</li>)}
+                            {achievements.map((item) => <li key={item}>{item}</li>)}
                         </ul>
                     </div>
                     <div className="col-md-6">
                         <h3 className="subsection-title">Soft Skills</h3>
                         <ul className="details-list">
-                            {softSkills.map((item, index) => <li key={index} style={{ animationDelay: `${index * 0.1}s` }}>{item}</li>)}
+                            {softSkills.map((item) => <li key={item}>{item}</li>)}
                         </ul>
                     </div>
                 </div>

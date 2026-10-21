@@ -90,9 +90,9 @@
 .preview-modal-media {
     display: block;
     width: 100%;
-    aspect-ratio: 16 / 9;
-    max-height: 300px;
-    object-fit: cover;
+    height: auto;
+    max-height: 380px;
+    object-fit: contain;
     object-position: top center;
     background: var(--surface);
     border-bottom: 1px solid var(--line);
@@ -261,4 +261,13 @@
     .preview-modal-content {
         animation: none;
     }
+}
+
+.preview-screenshot { margin: 0; }
+.preview-screenshot a { display: block; }
+.preview-screenshot figcaption {
+    padding: 10px 20px;
+    color: var(--ink-muted);
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--line);
 }

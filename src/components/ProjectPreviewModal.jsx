@@ -78,11 +78,14 @@ const ProjectPreviewModal = ({ project, onClose }) => {
 
                 <div className="preview-modal-scroll">
                     {project.image ? (
-                        <img
-                            src={project.image}
-                            alt={`${project.title} screenshot`}
-                            className="preview-modal-media"
-                        />
+                        <figure className="preview-screenshot">
+                            <a href={project.image} target="_blank" rel="noopener noreferrer"
+                                aria-label={`Open full-size ${project.title} screenshot`}>
+                                <img src={project.image} alt={`${project.title} screenshot`}
+                                    className="preview-modal-media" />
+                            </a>
+                            <figcaption>{project.imageCaption || 'Project interface'} · Open image to enlarge</figcaption>
+                        </figure>
                     ) : (
                         <div className="preview-modal-cover" aria-hidden="true">
                             <span className="project-cover-index">

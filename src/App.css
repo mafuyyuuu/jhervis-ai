@@ -1,10 +1,14 @@
 :root {
-    /* Editorial palette */
+    /* Deep emerald backdrop with electric-blue primary actions. */
     --ink: #f5f5f5;
     --ink-muted: rgba(245, 245, 245, 0.62);
     --ink-subtle: rgba(245, 245, 245, 0.35);
-    --surface: #0a0a0a;
-    --panel: #131313;
+    --surface: #06110e;
+    --panel: #0d201a;
+    --action: #38bdf8;
+    --action-hover: #7dd3fc;
+    --action-ink: #03131e;
+    --action-glow: rgba(56, 189, 248, 0.22);
     --line: rgba(245, 245, 245, 0.14);
     --line-strong: rgba(245, 245, 245, 0.32);
     --accent: #00d9c4;
@@ -27,9 +31,10 @@ body {
     margin: 0;
     padding: 0;
     background:
-        radial-gradient(ellipse 900px 600px at 50% -5%, rgba(0, 217, 196, 0.08), transparent 60%),
-        radial-gradient(ellipse 700px 500px at 100% 100%, rgba(0, 217, 196, 0.04), transparent 60%),
-        var(--surface);
+        radial-gradient(ellipse at 15% 5%, rgba(21, 128, 80, 0.28), transparent 55%),
+        radial-gradient(ellipse at 95% 75%, rgba(16, 100, 69, 0.22), transparent 60%),
+        linear-gradient(155deg, #102d21 0%, #071a14 45%, #06110e 100%);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: var(--font-body);
     overflow-x: hidden;

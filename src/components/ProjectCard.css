@@ -35,12 +35,10 @@
     height: 100%;
     object-fit: cover;
     object-position: top center;
-    filter: grayscale(0.6) brightness(0.85);
+    filter: none;
 }
 
-.project-card:hover .project-image {
-    filter: grayscale(0.15) brightness(1);
-}
+
 
 /* Stand-in for projects with no real screenshot yet: a numbered plate, in the
    same display face as the section headings. Reads as a deliberate editorial
@@ -94,7 +92,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(180deg, transparent 0%, rgba(10, 10, 10, 0.85) 100%);
+    background: linear-gradient(180deg, transparent 0%, rgba(6, 17, 14, 0.18) 100%);
 }
 
 .project-content {
